@@ -1,0 +1,73 @@
+# Flutter specific
+build/
+.flutter/
+.packages
+.pub/
+pubspec.lock
+.idea/
+*.iml
+
+/.dart_tool/
+/.flutter-plugins
+/flutter-plugins-dependencies
+/.idea/
+/build/
+/ios/.generated/
+/android/.generated/
+/coverage/
+
+# Android specific
+/android/.gradle
+/android/captures/
+/android/.idea
+/android/local.properties
+/android/app/debug
+/android/app/profile
+/android/app/release
+*.jks
+
+# iOS specific
+ios/Flutter/.last_build_id
+ios/Pods
+ios/Runner.xcworkspace
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Web specific
+web/.dart_tool/
+/web/FlutterServiceWorker.js
+/web/flutter_service_worker.js
+/web/index.html
+/web/main.dart.js
+/web/assets
+
+# macOS specific
+macos/Flutter/ephemeral
+macos/.symlinks
+
+# Windows specific
+windows/flutter/ephemeral
+
+# Linux specific
+linux/flutter/ephemeral
+
+# IntelliJ related files
+*.ipr
+*.iws
+.idea/.name
+.idea/modules.xml
+.idea/*.iml
+.idea/workspace.xml
+.idea/libraries
+
+# VS Code related files
+.vscode/
+
+# Other
+*.log
+*.tmp
+*.temp
+*.swp

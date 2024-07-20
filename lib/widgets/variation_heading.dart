@@ -1,0 +1,58 @@
+import 'package:flutter/material.dart';
+import '/utils/font_size.dart';
+import '/theme/colors.dart';
+import '/utils/theme_colors.dart';
+
+class VariationHeading extends StatefulWidget {
+  const VariationHeading({Key? key}) : super(key: key);
+
+  @override
+  _VariationHeadingState createState() => _VariationHeadingState();
+}
+
+class _VariationHeadingState extends State<VariationHeading> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Variation",
+                  style: TextStyle(
+                      fontSize: FontSize.xMedium, fontWeight: FontWeight.w900),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: lightOrange,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      )),
+                  padding: EdgeInsets.all(7.0),
+                  margin: EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    '1 Required',
+                    style: TextStyle(
+                        color: ThemeColors.baseThemeColor,
+                        fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ],
+            ),
+            Text("Select one",
+                style: TextStyle(
+                  fontSize: FontSize.xMedium,
+                  color: Colors.grey,
+                  // fontWeight: FontWeight.w300
+                ))
+          ],
+        ));
+  }
+}
