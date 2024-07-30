@@ -20,6 +20,7 @@ class SearchController extends GetxController {
   }
 
   getSearch(name, expedition) async {
+    print(name);
     searchLoader = true;
     Map<String, String> queryParameters = {
       'name': name,
@@ -32,11 +33,17 @@ class SearchController extends GetxController {
       if (response != null && response.statusCode == 200) {
         searchLoader = false;
         final jsonResponse = json.decode(response.body);
+         print("i am getting sorted and searched");
         print(jsonResponse);
         var searchData = Data.fromJson(jsonResponse['data']);
+        
         restaurantList = <Restaurant>[];
         restaurantList.addAll(searchData.data!);
 
+// Filter the results to match the name exactly
+        restaurantList = restaurantList.where((restaurant) {
+          return restaurant.name!.toLowerCase() == name.toLowerCase();
+        }).toList();
 
        // Update the image URLs
       restaurantList = restaurantList.map((restaurant) {
@@ -44,7 +51,8 @@ class SearchController extends GetxController {
           restaurant.image = "https://woich.in" + restaurant.image!;
         }
        
-       
+       print("restaurant after search");
+       print(restaurant.toJson());
         return restaurant;
       }).toList();
 

@@ -85,7 +85,7 @@ class CateegoryAllRestaurents extends StatelessWidget {
 
                                     children: <Widget>[
                                       CachedNetworkImage(
-                                        imageUrl: allRestaurants
+                                        imageUrl: "https://woich.in/"+allRestaurants
                                             .restaurantList[index].image!,
                                         imageBuilder:
                                             (context, imageProvider) =>

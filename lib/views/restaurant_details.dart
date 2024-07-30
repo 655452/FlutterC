@@ -14,10 +14,15 @@ import '/widgets/description_container.dart';
 import '/widgets/img_container_res_details.dart';
 import 'book_table.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' show parse;
+
 class RestaurantDetails extends StatefulWidget {
   final int? id;
 
   RestaurantDetails({required this.id});
+  
+
 
   @override
   State<StatefulWidget> createState() => _RestaurantDetailsState();
@@ -28,6 +33,50 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   final restaurantDetailsController = Get.put(RestaurantDetailsController());
   final cartController = Get.put(CartController());
 
+// search bar4 // Step 1: Add a TextEditingController
+  // final TextEditingController _searchController = TextEditingController();
+ScrollController _scrollController = ScrollController(); // search bar
+Map<String?, GlobalKey> menuKeys = {};
+
+// to extract all the  categories
+
+Future<void> ALLCategories() async {
+  var restaurantName=restaurantDetailsController.restaurantName;
+ 
+  print(restaurantName);
+  final url = 'https://woich.in/restaurant/sugar-twooth';
+  final response = await http.get(Uri.parse(url));
+
+  if (response.statusCode == 200) {
+    final document = parse(response.body);
+    extractCategoriesAndItems(document);
+  } else {
+    print('Failed to fetch HTML: ${response.statusCode}');
+  }
+}
+
+void extractCategoriesAndItems(document) {
+  final categories = document.querySelectorAll('.product-category');
+
+  for (final category in categories) {
+    // Get the category title
+    final categoryTitle = category.querySelector('.product-category-title')?.text.trim() ?? 'No Title';
+    // print('Category: $categoryTitle');
+
+    // Get all product items within this category
+    final items = category.querySelectorAll('.product-card');
+    for (final item in items) {
+      // Get the item name
+      final itemName = item.querySelector('.product-card-title')?.text.trim() ?? 'No Name';
+      // print('  Item: $itemName');
+    }
+    print('');  // Add a blank line for readability
+  }
+}
+
+
+  
+
   Future<Null> _refresh() async {
     restaurantDetailsController.getRestaurant(widget.id!);
     await Future.delayed(new Duration(seconds: 3));
@@ -36,13 +85,28 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   @override
   void initState() {
     restaurantDetailsController.getRestaurant(widget.id!);
+    print('getting all Categories');
+                                      // ALLCategories();
+
+
+
+ // Clean up the controller when the widget is disposed.
     super.initState();
   }
 
+
+  
   @override
   Widget build(BuildContext context) {
     mainHeight = MediaQuery.of(context).size.height;
     mainWidth = MediaQuery.of(context).size.width;
+
+// Step 2: Initialize GlobalKeys for each menu item
+  var menuItemList = restaurantDetailsController.menuItemList;
+    for (var menuItem in menuItemList) {
+      menuKeys[menuItem.name] = GlobalKey();
+      // print(menuKeys[menuItem.name]);
+    }
 
     return GetBuilder<RestaurantDetailsController>(
         init: RestaurantDetailsController(),
@@ -192,156 +256,204 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                           : Container(),
                       Column(
                         children: [
-                          ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: restaurant.menuItemList.length,
-                              itemBuilder: (context, index) => Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10.0, right: 10, bottom: 10),
-                                    child: InkWell(
-                                      onTap: () {
-                                        // Get.to(() => ProductsDetails(
-                                        //     restaurantID:
-                                        //         restaurant.restaurantID,
-                                        //     deliveryCharge: restaurant
-                                        //         .restaurantDeliveryCharge,
-                                        //     menuItemID: restaurant
-                                        //         .menuItemList[index].id));
-                                      },
-                                      child: Container(
-                                          width: mainWidth,
-                                          child: Card(
-                                            elevation: 1,
-                                            shadowColor: Colors.blueGrey,
-                                            margin: EdgeInsets.only(bottom: 5),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                CachedNetworkImage(
-                                                  imageUrl: restaurant
-                                                      .menuItemList[index]
-                                                      .image!,
-                                                  imageBuilder: (context,
-                                                          imageProvider) =>
-                                                      Container(
-                                                    width: mainWidth / 3.8,
-                                                    height: mainHeight / 8,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                              topLeft: Radius
-                                                                  .circular(
-                                                                      10.0),
-                                                              bottomLeft: Radius
-                                                                  .circular(
-                                                                      10.0)),
-                                                      image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.fill,
-                                                        //alignment: Alignment.topCenter,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  placeholder: (context, url) =>
-                                                      Shimmer.fromColors(
-                                                    baseColor:
-                                                        Colors.grey[300]!,
-                                                    highlightColor:
-                                                        Colors.grey[400]!,
-                                                    child: Container(
-                                                      width: mainWidth / 3.8,
-                                                      height: mainHeight / 8.5,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                              "assets/images/farmhouse.jpg"),
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Icon(Icons.error),
-                                                ),
-
-                                                //menu_description section
-                                                Expanded(
-                                                  child: Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10,
-                                                            vertical: 5),
-                                                    child: Column(
-                                                      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Container(
-                                                              child: Flexible(
-                                                                child: Text(
-                                                                  '${restaurant.menuItemList[index].name}',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                  maxLines: 1,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                              child: Text(
-                                                                // "${Get.find<GlobalController>().currencyCode}${restaurant.menuItemList[index].unitPrice}",
-                                                                "₹ ${restaurant.menuItemList[index].unitPrice}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 13,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(height: 20),
-                                                        Text(
-                                                          "${restaurant.menuItemList[index].description}",
-                                                          style: TextStyle(
-                                                            fontSize: 13,
-                                                            color: Colors.grey,
-                                                          ),
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )),
+                          // adding search bar
+                          Padding(
+                                  padding: const EdgeInsets.only(left:30,right: 30,top:30,bottom: 0),
+                                  child: Container(
+                                    height:44,
+                                    child:TextField(
+                                    // controller: _searchController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Search Menu items',
+                                      labelStyle: TextStyle(
+                                        color:Colors.black,
+                                        ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                                      ),
+                                      suffixIcon: Icon(
+                                          Icons.search,
+                                          color: Color.fromARGB(255, 230, 32, 32), // This sets the color of the search icon
+                                        ),
+                                      
                                     ),
-                                  )),
-                        ],
+                                    // Step 3: Add the onChanged callback
+                                    onSubmitted: (value) {
+                                      print("Search input: $restaurant $value");
+                                      print(restaurant.menuItemList);
+                                       // Assuming restaurant is an instance of RestaurantDetailsController and has a menuItemList
+                                       var menuItemList = restaurant.menuItemList;
+                                      //  for (var menuItem in restaurant.menuItemList) {
+                                      //         menuKeys[menuItem.name] = GlobalKey();
+                                      //       }
+                                      // print('getting all Categories');
+                                      // ALLCategories();
+                                       // Loop over the menuItemList and check if the entered value matches any menu item's name
+                                        for (var category in restaurant.categoryList) {
+                                            for (var item in category.items) {
+                                              print("Processing item: ${item.name}");
+                                            if (item.name!.toLowerCase().contains(value.toLowerCase())) {
+                                               var context = menuKeys[item.name]?.currentContext;
+                                              print(context);
+                                              if (context != null) {
+                                                Scrollable.ensureVisible(
+                                                  context,
+                                                  duration: Duration(seconds: 1),
+                                                  curve: Curves.easeInOut,
+                                                );
+                                              }
+                                              } else {
+                                                print("No matching item found for: ${item.name}");
+                                              }
+                                            }
+                                          }
+                                      
+                                    },
+                                  ),
+                                )
+                                  ),
+                                
+
+                          ListView.builder(
+  physics: NeverScrollableScrollPhysics(),
+  shrinkWrap: true,
+  controller: _scrollController,
+  itemCount: restaurant.categoryList.length,
+  itemBuilder: (context, categoryIndex) {
+    final category = restaurant.categoryList[categoryIndex];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Text(
+            category.name,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: category.items.length,
+          itemBuilder: (context, itemIndex) {
+            final menuItem = category.items[itemIndex];
+            return Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+              child: InkWell(
+                
+                onTap: () {
+                  // Navigation or any other action
+                },
+                child: Container(
+                  width: mainWidth,
+                  
+                  child: Card(
+                    key: menuKeys[menuItem.name], // Assign GlobalKey
+                    elevation: 1,
+                    shadowColor: Colors.blueGrey,
+                    margin: EdgeInsets.only(bottom: 5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: Row(
+                      children: [
+                        if (menuItem.image != null)
+                          CachedNetworkImage(
+                            imageUrl: menuItem.image!,
+                            imageBuilder: (context, imageProvider) => Container(
+                              width: mainWidth / 3.8,
+                              height: mainHeight / 8,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10.0),
+                                    bottomLeft: Radius.circular(10.0)),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[400]!,
+                              child: Container(
+                                width: mainWidth / 3.8,
+                                height: mainHeight / 8.5,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: AssetImage("assets/images/farmhouse.jpg"),
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                          ),
+                        Expanded(
+                          child: Container(
+                            key: menuKeys[menuItem.name], // Assign GlobalKey
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        menuItem.name,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (menuItem.unitPrice != null)
+                                      Text(
+                                        "₹ ${menuItem.unitPrice}",
+                                        style: TextStyle(fontSize: 13),
+                                      ),
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                if (menuItem.description != null)
+                                  Text(
+                                    menuItem.description!,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  },
+),
+   ],
                       ),
                     ],
                   ),
@@ -350,3 +462,5 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
             ));
   }
 }
+
+

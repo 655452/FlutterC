@@ -34,6 +34,14 @@ class CuisineWiseRestaurants extends GetxController {
         restaurantList = <Restaurant>[];
         print(cuisineWiseRestaurantData);
         restaurantList.addAll(cuisineWiseRestaurantData.data!.restaurants!);
+
+          // Update the image URLs
+      restaurantList = restaurantList.map((cuisine) {
+        if (cuisine.image != null) {
+          cuisine.image = "https://woich.in"+cuisine.image!;  // changed the image urls
+        }
+        return cuisine;
+      }).toList();
         Future.delayed(Duration(milliseconds: 10), () {
           update();
         });

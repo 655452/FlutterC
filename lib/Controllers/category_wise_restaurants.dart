@@ -28,10 +28,11 @@ class CategoryWiseRestaurants extends GetxController {
       if (response != null && response.statusCode == 200) {
         categoryWiseRestaurantsLoader = false;
         final jsonResponse = json.decode(response.body);
+        print("category wise controller");
         print(jsonResponse);
         var categoryWiseRestaurantData =
             RestaurantByCategoryData.fromJson(jsonResponse['data']);
-        print(jsonResponse);
+        print("category Wise"+jsonResponse);
         restaurantList = <Restaurant>[];
         print(categoryWiseRestaurantData);
         restaurantList.addAll(categoryWiseRestaurantData.data!.restaurants!);

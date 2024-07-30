@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "991394257753",
+    "project_id": "woich-c0aea",
+    "storage_bucket": "woich-c0aea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991394257753:android:e24132a898499ccb2e8a48",
+        "android_client_info": {
+          "package_name": "Woich.in"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2DGg1RybrnML34ZOKYJDaTTcfJLqoelE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

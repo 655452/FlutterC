@@ -35,6 +35,30 @@ class _ViewRestaurantPageSearchState extends State<ViewRestaurantPageSearch> {
         color: Colors.white),
   );
 
+//  extracting  description from restaurants
+  Map<String, String> parseDescription(String description) {
+  final instagramRegEx = RegExp(r'instagram=([\w\.]+)');
+  final facebookRegEx = RegExp(r'facebook=([\w\s]+) description=');
+  final descriptionRegEx = RegExp(r'description=(.+)');
+
+  final instagramMatch = instagramRegEx.firstMatch(description);
+  final facebookMatch = facebookRegEx.firstMatch(description);
+  final descriptionMatch = descriptionRegEx.firstMatch(description);
+
+  final instagram = instagramMatch?.group(1) ?? '';
+  final facebook = facebookMatch?.group(1) ?? '';
+  final desc = descriptionMatch?.group(1) ?? '';
+
+  // print('Original description: $description');
+  // print('Instagram handle: $instagram');
+  // print('Facebook handle: $facebook');
+  // print('Description: $desc');
+  return {
+    'instagram': instagram,
+    'facebook': facebook,
+    'description': desc,
+  };
+}
   @override
   void initState() {
     activeMenu = widget.type;
@@ -88,7 +112,7 @@ class _ViewRestaurantPageSearchState extends State<ViewRestaurantPageSearch> {
                               isCollapsed: true,
                               border: InputBorder.none,
                               fillColor: Colors.white,
-                              hintText: "Search for Restaurants",
+                              hintText: "Search by  Business",
                               hintStyle: TextStyle(
                                 color: Colors.grey.shade500,
                               ),
@@ -98,8 +122,10 @@ class _ViewRestaurantPageSearchState extends State<ViewRestaurantPageSearch> {
                               ),
                             ),
                             onFieldSubmitted: (value) {
+                              print(value);
                               setState(() {
                                 restaurentName = value.toString();
+                                print(restaurentName);
                               });
                               searchController.getSearch(restaurentName,
                                   menu[activeMenu].toLowerCase());
@@ -128,6 +154,7 @@ class _ViewRestaurantPageSearchState extends State<ViewRestaurantPageSearch> {
                                   shrinkWrap: true,
                                   itemCount:
                                       searchRestaurant.restaurantList.length,
+                                     
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.only(
@@ -220,10 +247,14 @@ class _ViewRestaurantPageSearchState extends State<ViewRestaurantPageSearch> {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        searchRestaurant
+                                                        // searchRestaurant
+                                                        //     .restaurantList[
+                                                        //         index]
+                                                        //     .description!,
+                                                            parseDescription("${searchRestaurant
                                                             .restaurantList[
                                                                 index]
-                                                            .description!,
+                                                            .description}")["description"]??"null",
                                                         style: TextStyle(
                                                             fontSize: 13),
                                                         maxLines: 1,

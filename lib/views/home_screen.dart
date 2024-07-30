@@ -31,6 +31,10 @@ import '/widgets/all_restaurants_heading.dart';
 import '/widgets/cuisine_heading.dart';
 import '/widgets/custom_slider.dart';
 import '/widgets/popular_cuisines.dart';
+// import '/widgets/view_all_category.dart';// for categories
+import '../Controllers/category_Controller.dart';
+import '/widgets/catergories_list.dart';
+import '/widgets/categories_heading.dart';
 import '/widgets/shimmer/popular_restaurant_shimmer.dart';
 import '../Controllers/address_controller.dart';
 import 'map/map_screen.dart';
@@ -59,7 +63,34 @@ class _HomePageState extends State<HomePage> {
   final popularRestaurantsController = Get.put(PopularRestaurantController());
   final bannerController = Get.put(BannerController());
   final cuisinesController = Get.put(CuisineController());
+  
+  final categoryController = Get.put(CategoryController());// category updated
   final addressController = Get.put(AddressController());
+
+//  extracting  description from restaurants
+  Map<String, String> parseDescription(String description) {
+  final instagramRegEx = RegExp(r'instagram=([\w\.]+)');
+  final facebookRegEx = RegExp(r'facebook=([\w\s]+) description=');
+  final descriptionRegEx = RegExp(r'description=(.+)');
+
+  final instagramMatch = instagramRegEx.firstMatch(description);
+  final facebookMatch = facebookRegEx.firstMatch(description);
+  final descriptionMatch = descriptionRegEx.firstMatch(description);
+
+  final instagram = instagramMatch?.group(1) ?? '';
+  final facebook = facebookMatch?.group(1) ?? '';
+  final desc = descriptionMatch?.group(1) ?? '';
+
+  // print('Original description: $description');
+  // print('Instagram handle: $instagram');
+  // print('Facebook handle: $facebook');
+  // print('Description: $desc');
+  return {
+    'instagram': instagram,
+    'facebook': facebook,
+    'description': desc,
+  };
+}
 
   Future<Null> _onRefresh() {
     setState(() {
@@ -353,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                                           isCollapsed: true,
                                           border: InputBorder.none,
                                           fillColor: Colors.white,
-                                          hintText: "Search for Restaurants",
+                                          hintText: "Search by Business",
                                           hintStyle: TextStyle(
                                             color: Colors.grey.shade500,
                                           ),
@@ -371,8 +402,20 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 bannerController.bannerList.isEmpty
+                                    ?  Container()
+                                    :CustomSliderWidget(),
+                               categoryController.categoriesList.isEmpty
                                     ? Container()
-                                    : CustomSliderWidget(),
+                                    : Divider(
+                                        height: 10,
+                                        thickness: 10,
+                                      ),
+                                categoryController.categoriesList.isEmpty
+                                    ? Container()
+                                    : CategoriesHeading(),
+                               categoryController.categoriesList.isEmpty
+                                    ? Container()
+                                    : CategoriesList(),
                                 cuisinesController.cuisineList.isEmpty
                                     ? Container()
                                     : Divider(
@@ -521,7 +564,8 @@ class _HomePageState extends State<HomePage> {
                                                                       .start,
                                                               children: [
                                                                 Text(
-                                                                  "${popularRestaurant.bestSellingRestaurantList[index].description}",
+                                                                  // "${popularRestaurant.bestSellingRestaurantList[index].description}",
+                                                                  parseDescription("${popularRestaurant.bestSellingRestaurantList[index].description}")["description"]??"null",
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                           13),

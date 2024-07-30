@@ -25,6 +25,7 @@ class CategoryController extends GetxController {
         final jsonResponse = json.decode(response.body);
         var categoryData = CategoryData.fromJson(jsonResponse['data']);
         categoriesList = <CategoryDataModel>[];
+        print("category controller");
         print(categoryData.categoriesList);
         categoriesList.addAll(categoryData.categoriesList!);
         Future.delayed(Duration(milliseconds: 10), () {

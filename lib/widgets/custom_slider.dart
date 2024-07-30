@@ -89,7 +89,7 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
                         imageUrl: banner.bannerList[itemIndex].image!,
                         imageBuilder: (context, imageProvider) => Image(
                           image: imageProvider,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                         ),
                         placeholder: (context, url) => Shimmer.fromColors(
                           child: Container(

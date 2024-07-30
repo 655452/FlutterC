@@ -93,10 +93,24 @@ class _ViewAllCategoriesSTate extends State<ViewAllCategories> {
                           CachedNetworkImage(
                             imageUrl:
                                 "${categories.categoriesList[index].image}",
-                            imageBuilder: (context, imageProvider) => Image(
-                              image: imageProvider,
-                              height: 80,
+                            // imageBuilder: (context, imageProvider) => Image(
+                            //   image: imageProvider,
+                            //   height: 80,
+                            // ),
+                              imageBuilder: (context, imageProvider) => Container(
+          
+                              height: 120, // changesd sizez
+                             
+                               decoration: BoxDecoration(
+                                 image: DecorationImage(
+                                   image: imageProvider,
+                                   fit: BoxFit.cover,
+                                 ),
+                               ),
+                             
+                             
                             ),
+                          
                             placeholder: (context, url) => Shimmer.fromColors(
                               child: CircleAvatar(radius: 50),
                               baseColor: Colors.grey[300]!,

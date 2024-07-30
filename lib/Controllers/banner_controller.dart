@@ -25,6 +25,8 @@ class BannerController extends GetxController {
         var bannerData = Data.fromJson(jsonResponse['data']);
         bannerList = <BannerData>[];
         bannerList.addAll(bannerData.data!);
+        print("Banner");
+        print(bannerList);
         Future.delayed(Duration(milliseconds: 10), () {
           update();
         });

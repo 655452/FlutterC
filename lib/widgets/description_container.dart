@@ -8,7 +8,6 @@ import '/widgets/shimmer/description_container_shimmer.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '/Controllers/profile_controller.dart';// for phone number
 import 'package:url_launcher/url_launcher.dart';
 
 class DescriptionContainer extends StatefulWidget {
@@ -24,6 +23,30 @@ class _DescriptionContainerState extends State<DescriptionContainer> {
   var mainHeight, mainWidth;
   final restaurantDetailsController = Get.put(RestaurantDetailsController());
 
+// taking  out instagram  facebook and  decsription from the  description text
+Map<String, String> parseDescription(String description) {
+  final instagramRegEx = RegExp(r'instagram=([\w\.]+)');
+  final facebookRegEx = RegExp(r'facebook=([\w\s]+) description=');
+  final descriptionRegEx = RegExp(r'description=(.+)');
+
+  final instagramMatch = instagramRegEx.firstMatch(description);
+  final facebookMatch = facebookRegEx.firstMatch(description);
+  final descriptionMatch = descriptionRegEx.firstMatch(description);
+
+  final instagram = instagramMatch?.group(1) ?? '';
+  final facebook = facebookMatch?.group(1) ?? '';
+  final desc = descriptionMatch?.group(1) ?? '';
+
+  print('Original description: $description');
+  print('Instagram handle: $instagram');
+  print('Facebook handle: $facebook');
+  print('Description: $desc');
+  return {
+    'instagram': instagram,
+    'facebook': facebook,
+    'description': desc,
+  };
+}
 // for whatsapp these funxtion is  integrated
 void launchWhatsApp({required String phone}) async {
   // final url = 'https://wa.me/$phone';
@@ -32,6 +55,24 @@ void launchWhatsApp({required String phone}) async {
     await launchUrl(url);
   } else {
     throw 'Could not launch $url';
+  }
+}
+//  latest Added
+void launchInstagram({required String username}) async {
+  final Uri urlApp = Uri.parse('instagram://user?username=$username');
+  if (await canLaunchUrl(urlApp)) {
+    await launchUrl(urlApp);
+  } else {
+    throw 'Could not launch $urlApp';
+  }
+}
+//  updated
+void launchFacebook({required String profileId}) async {
+  final Uri urlApp = Uri.parse('fb://profile/$profileId');
+  if (await canLaunchUrl(urlApp)) {
+    await launchUrl(urlApp);
+  } else {
+    throw 'Could not launch $urlApp';
   }
 }
 
@@ -46,6 +87,8 @@ void launchWhatsApp({required String phone}) async {
           ? DescriptionContainerShimmer()
           : Container(
               //height: 300,
+              
+    // final parsedData = parseDescription("${des.restaurantDescription}");
               width: mainWidth,
               child: Column(
                 children: [
@@ -107,6 +150,43 @@ void launchWhatsApp({required String phone}) async {
                                 height: 30,
                           ),
                         ),
+                        SizedBox(width: 10),
+                        InkWell(
+                          onTap: () {
+                           launchInstagram(username: parseDescription("${des.restaurantDescription}")["instagram"]??"null");
+                          },
+                          // child: Icon(
+                          //   Icons.info_outline,
+                          //   color: ThemeColors.baseThemeColor,
+                          //   size: 30,
+                          // ),
+                          child: Image.network(
+                                'https://cdn-icons-png.flaticon.com/128/15707/15707749.png', // Insta icon URL
+                                // color: ThemeColors.baseThemeColor,
+                                width: 27,
+                                height: 27,
+                          ),
+                        ),
+                                                SizedBox(width: 10),
+                        InkWell(
+                          onTap: () {
+                          //  launchWhatsApp(phone: "9833891281");
+                           launchFacebook(profileId: parseDescription("${des.restaurantDescription}")["facebook"]??"null");
+                          },
+                          // child: Icon(
+                          //   Icons.info_outline,
+                          //   color: ThemeColors.baseThemeColor,
+                          //   size: 30,
+                          // ),
+                          child: Image.network(
+                                'https://cdn-icons-png.flaticon.com/128/145/145802.png', // Facebook icon URL
+                                // color: ThemeColors.baseThemeColor,
+                                width: 27,
+                                height: 27,
+                          ),
+                        ),
+                                                SizedBox(width: 10),
+                        
                          InkWell(
                           onTap: () {
                             Get.to(RestaurantInfo(

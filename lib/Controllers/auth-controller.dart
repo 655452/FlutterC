@@ -242,6 +242,7 @@ class AuthController extends GetxController {
   }
 
   loginGoogle() async {
+    print("google Asit");
     try {
       _userObj = (await _googleSignIn.signIn())!;
       print(_userObj);
