@@ -17,6 +17,31 @@ class CuisineAllRestaurents extends StatelessWidget {
   final cuisineId, cuisineTitle;
   CuisineAllRestaurents({required this.cuisineId, required this.cuisineTitle});
 
+  //  extracting  description from restaurants
+  Map<String, String> parseDescription(String description) {
+  final instagramRegEx = RegExp(r'instagram=([\w\.]+)');
+  final facebookRegEx = RegExp(r'facebook=([\w\s]+) description=');
+  final descriptionRegEx = RegExp(r'description=(.+)');
+
+  final instagramMatch = instagramRegEx.firstMatch(description);
+  final facebookMatch = facebookRegEx.firstMatch(description);
+  final descriptionMatch = descriptionRegEx.firstMatch(description);
+
+  final instagram = instagramMatch?.group(1) ?? '';
+  final facebook = facebookMatch?.group(1) ?? '';
+  final desc = descriptionMatch?.group(1) ?? '';
+
+  // print('Original description: $description');
+  // print('Instagram handle: $instagram');
+  // print('Facebook handle: $facebook');
+  // print('Description: $desc');
+  return {
+    'instagram': instagram,
+    'facebook': facebook,
+    'description': desc,
+  };
+}
+
   @override
   Widget build(BuildContext context) {
     print(cuisineTitle);
@@ -67,7 +92,7 @@ class CuisineAllRestaurents extends StatelessWidget {
                               child: GestureDetector(
                                 onTap: () {
                                   Get.to(RestaurantDetails(
-                                    id: allRestaurants.restaurantList[index].id,
+                                    id: allRestaurants.restaurantList[index].id
                                   ));
                                 },
                                 child: Card(
@@ -136,7 +161,8 @@ class CuisineAllRestaurents extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "${allRestaurants.restaurantList[index].description}",
+                                                // "${allRestaurants.restaurantList[index].description}",
+                                                parseDescription(allRestaurants.restaurantList[index].description!)["description"]??"null",
                                                 style: TextStyle(fontSize: 13),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,

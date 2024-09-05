@@ -13,7 +13,8 @@ class NotFoundPage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              CircleAvatar(
+              Expanded(
+                child:CircleAvatar(
                 backgroundColor: Colors.white,
                 radius: 50,
                 child: Image(
@@ -21,6 +22,7 @@ class NotFoundPage extends StatelessWidget {
                     "assets/images/no_restaurant_found.png",
                   ),
                 ),
+              ),
               ),
               SizedBox(
                 height: 20,

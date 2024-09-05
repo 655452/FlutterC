@@ -36,7 +36,7 @@ class _NoRestaurantFoundState extends State<NoRestaurantFound> {
                 height: 20,
               ),
               Text(
-                "No restaurant found",
+                "Not found",
                 style: TextStyle(
 
                     // fontWeight: FontWeight.w300,

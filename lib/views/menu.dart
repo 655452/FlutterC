@@ -7,7 +7,8 @@ import '/views/product_detail_page.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'no_menu_item_found.dart';
-
+// import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 class MenuPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LoginPageState();
@@ -61,54 +62,58 @@ class _LoginPageState extends State<MenuPage> {
                                           ),
                                           child: Row(
                                             children: [
-                                              CachedNetworkImage(
-                                                imageUrl: restaurantDetails
-                                                    .menuItemList[index].image!,
-                                                imageBuilder:
-                                                    (context, imageProvider) =>
-                                                        Container(
-                                                  width: mainWidth / 3,
-                                                  height: mainHeight / 6,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius
-                                                        .only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    10.0),
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    10.0)),
-                                                    image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.fill,
-                                                      //alignment: Alignment.topCenter,
-                                                    ),
-                                                  ),
+                                              MenuItemCarousel(
+                                                  images: restaurantDetails
+                                                    .menuItemList[index].image!, // Assuming menuItem.image is a List<String>
                                                 ),
-                                                placeholder: (context, url) =>
-                                                    Shimmer.fromColors(
-                                                  baseColor: Colors.grey[300]!,
-                                                  highlightColor:
-                                                      Colors.grey[400]!,
-                                                  child: Container(
-                                                    height: mainHeight / 6,
-                                                    width: mainWidth / 3,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      image: DecorationImage(
-                                                        image: AssetImage(
-                                                            "assets/images/farmhouse.jpg"),
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Icon(Icons.error),
-                                              ),
+                                              // CachedNetworkImage(
+                                              //   imageUrl: restaurantDetails
+                                              //       .menuItemList[index].image!,
+                                              //   imageBuilder:
+                                              //       (context, imageProvider) =>
+                                              //           Container(
+                                              //     width: mainWidth / 3,
+                                              //     height: mainHeight / 6,
+                                              //     decoration: BoxDecoration(
+                                              //       borderRadius: BorderRadius
+                                              //           .only(
+                                              //               topLeft:
+                                              //                   Radius.circular(
+                                              //                       10.0),
+                                              //               bottomLeft:
+                                              //                   Radius.circular(
+                                              //                       10.0)),
+                                              //       image: DecorationImage(
+                                              //         image: imageProvider,
+                                              //         fit: BoxFit.fill,
+                                              //         //alignment: Alignment.topCenter,
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              //   placeholder: (context, url) =>
+                                              //       Shimmer.fromColors(
+                                              //     baseColor: Colors.grey[300]!,
+                                              //     highlightColor:
+                                              //         Colors.grey[400]!,
+                                              //     child: Container(
+                                              //       height: mainHeight / 6,
+                                              //       width: mainWidth / 3,
+                                              //       decoration: BoxDecoration(
+                                              //         borderRadius:
+                                              //             BorderRadius.circular(
+                                              //                 10),
+                                              //         image: DecorationImage(
+                                              //           image: AssetImage(
+                                              //               "assets/images/farmhouse.jpg"),
+                                              //           fit: BoxFit.fill,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              //   errorWidget:
+                                              //       (context, url, error) =>
+                                              //           Icon(Icons.error),
+                                              // ),
 
                                               //menu_description section
                                               Expanded(
@@ -198,6 +203,68 @@ class _LoginPageState extends State<MenuPage> {
       onRatingUpdate: (rating) {
         print(rating);
       },
+    );
+  }
+}
+
+
+
+class MenuItemCarousel extends StatelessWidget {
+  final List<String> images; // List of image URLs
+
+  MenuItemCarousel({required this.images});
+
+  @override
+  Widget build(BuildContext context) {
+    final mainWidth = MediaQuery.of(context).size.width;
+    final mainHeight = MediaQuery.of(context).size.height;
+
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: mainHeight / 8, // Adjust the height as needed
+        viewportFraction: 1.0,
+        enlargeCenterPage: true,
+        autoPlay: true,
+      ),
+      items: images.map((imageUrl) {
+        return Builder(
+          builder: (BuildContext context) {
+            return CachedNetworkImage(
+              imageUrl: imageUrl,
+              imageBuilder: (context, imageProvider) => Container(
+                width: mainWidth / 3.8,
+                height: mainHeight / 8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    bottomLeft: Radius.circular(10.0),
+                  ),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[400]!,
+                child: Container(
+                  width: mainWidth / 3.8,
+                  height: mainHeight / 8.5,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/farmhouse.jpg"),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            );
+          },
+        );
+      }).toList(),
     );
   }
 }

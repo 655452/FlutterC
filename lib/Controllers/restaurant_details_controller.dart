@@ -27,12 +27,13 @@ class RestaurantDetailsController extends GetxController {
   List<MenuItemData> menuItemList = <MenuItemData>[];
   List<Review> reviewList = <Review>[];
   List<Vouchers> vouchersList = <Vouchers>[];
+  List<String> restaurantLogo=[];
   String? restaurantName,
       restaurantDeliveryCharge,
       restaurantDescription,
       restaurantAddress,
       restaurantImage,
-      restaurantLogo,
+      // restaurantLogo,
       openingTime,
       closingTime,
       lat,
@@ -49,14 +50,53 @@ List<Category> categoryList = <Category>[];
   }
 
   getRestaurant(int id) {
+    
     server
         .getRequest(endPoint: APIList.restaurant! + id.toString())
         .then((response) {
       if (response != null && response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        print(jsonResponse);
-        var restaurantData =
-            RestaurantDetailsData.fromJson(jsonResponse['data']);
+        print("bahi josn response\n\n");
+        var restaurantData =RestaurantDetailsData.fromJson(jsonResponse['data']);
+
+
+        // i have successfully accessed the  resturant  X just for logo replacement
+        var restaurantDataX =jsonResponse['data'];
+        // print(restaurantDataX['data']['restaurantX']['media'][0]['original_url']);
+        var mediaList =restaurantDataX['data']['restaurantX']['media'];
+        // var mediaList =restaurantDataX['data']['menuItemsX']['average_rating'];
+        print("average rating");
+        print(restaurantDataX['data']['menuItemsX']);
+        // Initialize an empty list to store URLs
+         List<String> logoUrls = [];
+         // Loop through the mediaList and add each 'original_url' to the logoUrls list
+        for (var mediaItem in mediaList) {
+          var url = mediaItem['original_url'];
+          if (url != null) {
+            logoUrls.add( "https://woich.in"+url);
+          }
+        }
+        print(logoUrls);
+
+
+      // these is  for menu items  Images
+        print("menu itemX");
+        // print(restaurantDataX['data']['menuItemsX'][0]['media']);
+        for (var mediaItem in restaurantDataX['data']['menuItemsX']) {
+         print(mediaItem['id']) ;
+        }
+        
+        // var menuItemedia=restaurantDataX['data']['menuItemsX'][0]['media'];
+        //  List<String>menuitemUrls = [];
+        // for (var mediaItem in menuItemedia) {
+          
+        //   var url = mediaItem['original_url'];
+        //   print("https://woich.in"+url);
+        //   menuitemUrls.add( "https://woich.in"+url);
+        // }
+        // print(menuitemUrls);
+
+
         if (restaurantData.data!.restaurant!.cuisines!.isNotEmpty) {
           var cuisinesData = '';
           restaurantData.data!.restaurant!.cuisines!.forEach((element) {
@@ -70,13 +110,34 @@ List<Category> categoryList = <Category>[];
         menuItemList = <MenuItemData>[];
         menuItemList.addAll(restaurantData.data!.menuItems!);
          // Update the image URLs for menu items
+         var countI=0;
       menuItemList = menuItemList.map((menuItem) {
-        if (menuItem.image != null ) {
-          menuItem.image = "https://woich.in" + menuItem.image!;
+        print(restaurantDataX['data']['menuItemsX'][countI]['id']==menuItem.id);
+        if(restaurantDataX['data']['menuItemsX'][countI]['id']==menuItem.id){
+            var menuItemedia=restaurantDataX['data']['menuItemsX'][countI]['media'];
+            List<String>menuitemUrls = [];
+            for (var mediaItem in menuItemedia) {
+              var url = mediaItem['original_url'];
+              // print("https://woich.in"+url);
+              menuitemUrls.add( "https://woich.in"+url);
+            }
+            print(menuitemUrls);
+            if (menuItem.image != null ) {
+          // menuItem.image = "https://woich.in" + menuItem.image!;
+          menuItem.image=menuitemUrls;
+          print("average rating");
+          print(restaurantDataX['data']['menuItemsX'][countI]['average_rating']);
+          // null checking
+          if (restaurantDataX['data']['menuItemsX'][countI]['average_rating'] != null) {
+          menuItem.ratings=double.parse(restaurantDataX['data']['menuItemsX'][countI]['average_rating']);
+          }
+          countI++;
         }
+            }
+        
         return menuItem;
       }).toList();
-      print("menuItem lista");
+      print("menuItem list");
       print(menuItemList);
         print(restaurantData.data!.menuItems!);
         reviewList = <Review>[];
@@ -95,7 +156,8 @@ List<Category> categoryList = <Category>[];
         restaurantDescription = restaurantData.data!.restaurant!.description;
         // here i have updated the code because its not accessing these part of url https://woich.in
         restaurantImage =  "https://woich.in" + (restaurantData.data!.restaurant!.image ?? "");
-        restaurantLogo = restaurantData.data!.restaurant!.logo;
+        // restaurantLogo = restaurantData.data!.restaurant!.logo;
+        restaurantLogo =logoUrls;
         openingTime = restaurantData.data!.restaurant!.openingTime;
         closingTime = restaurantData.data!.restaurant!.closingTime;
         restaurantAddress = restaurantData.data!.restaurant!.address;
@@ -194,11 +256,20 @@ void updateMenuItems() {
   for (var category in categoryList) {
     for (var item in category.items) {
       print("Processing item: ${item.name}");
+      print("Processing item: ${item}");
       if (menuItemListMap.containsKey(item.name)) {
         final matchedMenuItem = menuItemListMap[item.name]!;
         item.description = matchedMenuItem.description;
         item.unitPrice = matchedMenuItem.unitPrice != null ? double.tryParse(matchedMenuItem.unitPrice!) : null;
-        item.image = matchedMenuItem.image;
+        
+        // item.image = matchedMenuItem.image;
+              // Ensure the image list is correctly assigned
+      print("Before assignment: Item: ${item.name}, Image: ${item.image}");
+      item.image = matchedMenuItem.image; // Ensure this assignment is active and correct
+      print("After assignment: Item: ${item.name}, Image: ${item.image}");
+      item.ratings=matchedMenuItem.ratings;
+
+        print("under the ");
         print("Updated item: ${item.name}, Description: ${item.description}, UnitPrice: ${item.unitPrice}, Image: ${item.image}");
       } else {
         print("No matching item found for: ${item.name}");
@@ -264,14 +335,20 @@ class Category {
     return 'Category{name: $name, items: $items}';
   }
 }
-
 class MenuItem {
   String name;
   String? description;
   double? unitPrice;
-  String? image;
+  double? ratings;
+  List<String>? image; // List of non-nullable strings
 
-  MenuItem({required this.name, this.description, this.unitPrice, this.image});
+  MenuItem({
+    required this.name,
+    this.description,
+    this.unitPrice,
+    this.ratings,
+    required this.image, // Ensure this is required if you want to enforce non-null list
+  });
 
   @override
   String toString() {

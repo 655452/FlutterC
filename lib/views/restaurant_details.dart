@@ -16,6 +16,10 @@ import 'book_table.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
+import 'package:carousel_slider/carousel_slider.dart';
+
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class RestaurantDetails extends StatefulWidget {
   final int? id;
@@ -115,7 +119,8 @@ void extractCategoriesAndItems(document) {
               child: Scaffold(
                 floatingActionButton: Stack(
                   children: <Widget>[
-                    Align(
+                //  these is  catalog icons
+                 Align(
                       alignment: Alignment.topRight,
                       child: Padding(
                           padding: const EdgeInsets.only(top: 60),
@@ -129,60 +134,117 @@ void extractCategoriesAndItems(document) {
                                       child: FloatingActionButton(
                                     heroTag: "cart",
                                     onPressed: () {
-                                      Get.to(() => CartPage());
+                                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PdfWebViewPage(urls: restaurant.restaurantLogo!),
+                              ),
+                            );
                                     },
-                                    child: Icon(
-                                      Icons.shopping_cart,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
+                                   
+                                     child: Center(
+                              child: Image.network(
+                                'https://img.icons8.com/?size=64&id=SLyEErG3AwF8&format=png', // URL to your catalog icon
+                                width: 40.0,
+                                height: 40.0,
+                                // color: Colors.white, // Icon color, change if needed
+                              ),
+                            ),
                                     backgroundColor: ThemeColors.baseThemeColor,
                                   ))),
-                              new Positioned(
-                                  child: new Stack(
-                                children: <Widget>[
-                                  new Icon(Icons.brightness_1,
-                                      size: 20.0, color: Colors.orange),
-                                  new Positioned(
-                                      top: 4.0,
-                                      right: 5.5,
-                                      child: new Center(
-                                        child: new Text(
-                                          cart.totalQunty.toString(),
-                                          style: new TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 11.0,
-                                              fontWeight: FontWeight.w900),
-                                        ),
-                                      )),
-                                ],
-                              )),
+                              // new Positioned(
+                              //     child: new Stack(
+                              //   children: <Widget>[
+                              //     new Icon(Icons.brightness_1,
+                              //         size: 20.0, color: Colors.orange),
+                              //     new Positioned(
+                              //         top: 4.0,
+                              //         right: 5.5,
+                              //         child: new Center(
+                              //           child: new Text(
+                              //             cart.totalQunty.toString(),
+                              //             style: new TextStyle(
+                              //                 color: Colors.white,
+                              //                 fontSize: 11.0,
+                              //                 fontWeight: FontWeight.w900),
+                              //           ),
+                              //         )),
+                              //   ],
+                              // )),
                             ]),
                           )),
                     ),
-                    restaurant.tableStatus == 5
-                        ? Align(
-                            alignment: Alignment.bottomRight,
-                            child: FloatingActionButton.extended(
-                              heroTag: 'BookTable',
-                              backgroundColor: ThemeColors.baseThemeColor,
-                              onPressed: () {
-                                Get.to(
-                                  () => BookTable(
-                                    restaurantId: widget.id!,
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.library_books_outlined,
-                                color: Colors.white,
-                              ),
-                              label: Text("Book table"),
-                            ),
-                          )
-                        : SizedBox(
-                            height: 0,
-                          ),
+                 // it was the cart icon for it can be used future purpose
+                    // Align(
+                    //   alignment: Alignment.topRight,
+                    //   child: Padding(
+                    //       padding: const EdgeInsets.only(top: 60),
+                    //       child: GetBuilder<CartController>(
+                    //         init: CartController(),
+                    //         builder: (cart) => Stack(children: [
+                    //           SizedBox(
+                    //               height: 45,
+                    //               width: 45,
+                    //               child: FittedBox(
+                    //                   child: FloatingActionButton(
+                    //                 heroTag: "cart",
+                    //                 onPressed: () {
+                    //                   Get.to(() => CartPage());
+                    //                 },
+                    //                 child: Icon(
+                    //                   Icons.shopping_cart,
+                    //                   color: Colors.white,
+                    //                   size: 30,
+                    //                 ),
+                    //                 backgroundColor: ThemeColors.baseThemeColor,
+                    //               ))),
+                    //           new Positioned(
+                    //               child: new Stack(
+                    //             children: <Widget>[
+                    //               new Icon(Icons.brightness_1,
+                    //                   size: 20.0, color: Colors.orange),
+                    //               new Positioned(
+                    //                   top: 4.0,
+                    //                   right: 5.5,
+                    //                   child: new Center(
+                    //                     child: new Text(
+                    //                       cart.totalQunty.toString(),
+                    //                       style: new TextStyle(
+                    //                           color: Colors.white,
+                    //                           fontSize: 11.0,
+                    //                           fontWeight: FontWeight.w900),
+                    //                     ),
+                    //                   )),
+                    //             ],
+                    //           )),
+                    //         ]),
+                    //       )),
+                    // ),
+                  
+                    // for  Book A  Table  
+                    // restaurant.tableStatus == 5
+                    //     ? Align(
+                    //         alignment: Alignment.bottomRight,
+                    //         child: FloatingActionButton.extended(
+                    //           heroTag: 'BookTable',
+                    //           backgroundColor: ThemeColors.baseThemeColor,
+                    //           onPressed: () {
+                    //             Get.to(
+                    //               () => BookTable(
+                    //                 restaurantId: widget.id!,
+                    //               ),
+                    //             );
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.library_books_outlined,
+                    //             color: Colors.white,
+                    //           ),
+                    //           label: Text("Book table"),
+                    //         ),
+                    //       )
+                    //     : SizedBox(
+                    //         height: 0,
+                    //       ),
                     Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
@@ -366,38 +428,48 @@ void extractCategoriesAndItems(document) {
                     child: Row(
                       children: [
                         if (menuItem.image != null)
-                          CachedNetworkImage(
-                            imageUrl: menuItem.image!,
-                            imageBuilder: (context, imageProvider) => Container(
-                              width: mainWidth / 3.8,
-                              height: mainHeight / 8,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10.0),
-                                    bottomLeft: Radius.circular(10.0)),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[400]!,
-                              child: Container(
-                                width: mainWidth / 3.8,
-                                height: mainHeight / 8.5,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    image: AssetImage("assets/images/farmhouse.jpg"),
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Icon(Icons.error),
+                        // MenuItemCarousel(
+                        //   images: menuItem.image!, // Assuming menuItem.image is a List<String>
+                        // ),
+                        MenuItemImageCarousel(
+                            images: menuItem.image!,  // Assuming menuItem.image is a List<String>
+                            mainWidth: mainWidth,
+                            mainHeight: mainHeight,
                           ),
+                          // CachedNetworkImage(
+                          //   // imageUrl: menuItem.image!,
+                          //    imageUrl:menuItem.image!, 
+                          //   imageBuilder: (context, imageProvider) => Container(
+                          //     width: mainWidth / 3.8,
+                          //     height: mainHeight / 8,
+                          //     decoration: BoxDecoration(
+                          //       borderRadius: BorderRadius.only(
+                          //           topLeft: Radius.circular(10.0),
+                          //           bottomLeft: Radius.circular(10.0)),
+                          //       image: DecorationImage(
+                          //         image: imageProvider,
+                          //         fit: BoxFit.fill,
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   placeholder: (context, url) => Shimmer.fromColors(
+                          //     baseColor: Colors.grey[300]!,
+                          //     highlightColor: Colors.grey[400]!,
+                          //     child: Container(
+                          //       width: mainWidth / 3.8,
+                          //       height: mainHeight / 8.5,
+                          //       decoration: BoxDecoration(
+                          //         borderRadius: BorderRadius.circular(10),
+                          //         image: DecorationImage(
+                          //           image: AssetImage("assets/images/farmhouse.jpg"),
+                          //           fit: BoxFit.fill,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   errorWidget: (context, url, error) => Icon(Icons.error),
+                          // ),
+                       
                         Expanded(
                           child: Container(
                             key: menuKeys[menuItem.name], // Assign GlobalKey
@@ -424,19 +496,28 @@ void extractCategoriesAndItems(document) {
                                         "₹ ${menuItem.unitPrice}",
                                         style: TextStyle(fontSize: 13),
                                       ),
+                                     
                                   ],
                                 ),
                                 SizedBox(height: 20),
                                 if (menuItem.description != null)
-                                  Text(
-                                    menuItem.description!,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.grey,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                   GestureDetector(
+                                        onTap: () {
+                                          _showDescriptionDialog(context, menuItem.description!,menuItem.name!);
+                                        },
+                                        child: Text(
+                                          menuItem.description!,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                   SizedBox(height: 5),
+                                    _buildRatingStars(menuItem.ratings),
+                                    SizedBox(height: 10),
                               ],
                             ),
                           ),
@@ -462,5 +543,166 @@ void extractCategoriesAndItems(document) {
             ));
   }
 }
+
+
+ void _showDescriptionDialog(BuildContext context, String description,String name) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(name),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(description),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// start ratings
+  Widget _buildRatingStars(double? rating) {
+    // Default to 5 stars
+    int totalStars = 5;
+    int fullStars = 0;
+    int halfStars = 0;
+    int emptyStars = totalStars;
+
+    if (rating != null) {
+      fullStars = rating.floor();
+      halfStars = (rating - fullStars >= 0.5) ? 1 : 0;
+      emptyStars = totalStars - fullStars - halfStars;
+    }
+
+    return Row(
+      children: List.generate(totalStars, (index) {
+        if (index < fullStars) {
+          return Icon(Icons.star, color: Colors.orange, size: 16);
+        } else if (index < fullStars + halfStars) {
+          return Icon(Icons.star_half, color: Colors.orange, size: 16);
+        } else {
+          return Icon(Icons.star_border, color: Colors.grey, size: 16);
+        }
+      }),
+    );
+  }
+
+
+class MenuItemImageCarousel extends StatelessWidget {
+  final List<String> images;
+  final double mainWidth;
+  final double mainHeight;
+
+  MenuItemImageCarousel({
+    required this.images,
+    required this.mainWidth,
+    required this.mainHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Check if there's only one image
+    if (images.length == 1) {
+      return CachedNetworkImage(
+        imageUrl: images[0],
+        imageBuilder: (context, imageProvider) => Container(
+          width: mainWidth / 3.8,
+          height: mainHeight / 8,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.fill,
+            ),
+          ),
+        ),
+        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      );
+    } else {
+      // If there are more than one image, display the carousel
+      return SizedBox(
+        width: mainWidth / 3.8,
+        height: mainHeight / 8,
+        child: CarouselSlider(
+          options: CarouselOptions(
+            height: mainHeight / 8,
+            viewportFraction: 1.0,
+            enlargeCenterPage: true,
+            enableInfiniteScroll: true,  // Enable circular, infinite scrolling
+            autoPlay: true,  // Enable auto-play for smoother transitions
+            autoPlayInterval: Duration(seconds: 3),  // Duration for auto-play
+            autoPlayCurve: Curves.fastOutSlowIn,  // Smooth curve effect
+            scrollDirection: Axis.horizontal,  // Scroll direction
+          ),
+          items: images.map((imageUrl) {
+            return CachedNetworkImage(
+              imageUrl: imageUrl,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            );
+          }).toList(),
+        ),
+      );
+    }
+  }
+}
+
+
+class PdfWebViewPage extends StatelessWidget {
+  final List<String> urls;
+
+  PdfWebViewPage({required this.urls});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Catalog"),
+
+        backgroundColor: ThemeColors.baseThemeColor, // Set AppBar color
+      ),
+      body: PageView.builder(
+        itemCount: urls.length,
+        itemBuilder: (context, index) {
+          final url = urls[index];
+          final isPdf = url.toLowerCase().endsWith('.pdf');
+          final googleDocsUrl = 'https://docs.google.com/viewer?url=$url&embedded=true';
+
+          return isPdf
+              ? WebView(
+                  initialUrl: googleDocsUrl,
+                  javascriptMode: JavascriptMode.unrestricted,
+                )
+              : Center(
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.contain,
+                  ),
+                );
+        },
+      ),
+    );
+  }
+}
+
 
 

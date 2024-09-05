@@ -53,6 +53,7 @@ class Restaurant {
     this.address,
     this.image,
     this.avgRating,
+    this.cuisines,
     this.avgRatingUser,
   });
 
@@ -64,6 +65,7 @@ class Restaurant {
   String? image;
   int? avgRating;
   int? avgRatingUser;
+  List<String>? cuisines;
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
         id: json["id"],
@@ -73,6 +75,7 @@ class Restaurant {
         address: json["address"],
         image: json["image"],
         avgRating: json["avgRating"],
+        cuisines: json["cuisines"],
         avgRatingUser: json["avgRatingUser"],
       );
 
@@ -84,6 +87,8 @@ class Restaurant {
         "address": address,
         "image": image,
         "avgRating": avgRating,
+        "cuisines": cuisines,
+
         "avgRatingUser": avgRatingUser,
       };
 }

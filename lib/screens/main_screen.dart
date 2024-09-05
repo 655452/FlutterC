@@ -1,77 +1,69 @@
 import 'package:flutter/material.dart';
 import '/utils/theme_colors.dart';
-import '/views/orders_List.dart';
 import '/views/profile_page.dart';
-import '/views/table_reservations.dart';
-import '/views/view_restaurent_page_search.dart';
-import 'package:get/get.dart';
-import 'package:pandabar/pandabar.dart';
 import '/views/home_screen.dart';
+import '/views/CollectionPage.dart';
 
-/// This is the main application widget.
 class MainScreen extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _HomePageState extends State<MainScreen> {
-  String page = 'Home';
-  @override
-  void initState() {
-    super.initState();
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    HomePage(),
+    ProfilePage(),
+    CollectionPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      bottomNavigationBar: PandaBar(
-        backgroundColor: Colors.white,
-        buttonColor: Colors.blueGrey,
-        buttonSelectedColor: ThemeColors.baseThemeColor,
-        fabIcon: InkWell(
-            onTap: () {
-              Get.to(ViewRestaurantPageSearch(type: 0));
-            },
-            child: Icon(
-              Icons.search,
-              color: Colors.white,
-            )),
-        fabColors: [ThemeColors.baseThemeColor, ThemeColors.baseThemeColor],
-        buttonData: [
-          PandaBarButtonData(id: 'Home', icon: Icons.home, title: 'Home'),
-          PandaBarButtonData(
-              id: 'Orders', icon: Icons.sticky_note_2_sharp, title: 'Orders'),
-          PandaBarButtonData(
-              id: 'Reservations',
-              icon: Icons.event_note,
-              title: "Reservations"),
-          PandaBarButtonData(
-              id: 'Profile', icon: Icons.person, title: 'Profile'),
-        ],
-        onChange: (id) {
-          setState(() {
-            page = id;
-          });
-        },
-        onFabButtonPressed: () {},
-      ),
-      body: Builder(
-        builder: (context) {
-          print(page);
-          switch (page) {
-            case 'Home':
-              return HomePage();
-            case 'Orders':
-              return OrderList();
-            case 'Profile':
-              return ProfilePage();
-            case 'Reservations':
-              return TableReservations();
-            default:
-              return HomePage();
-          }
-        },
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 3,
+              blurRadius: 15,
+              offset: Offset(0, -3), // Shadow above the navbar
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: ThemeColors.baseThemeColor, // Active button color
+          unselectedItemColor: Colors.grey[600], // Inactive button color
+          showSelectedLabels: true,
+          showUnselectedLabels: false, // Hide labels for unselected items
+          elevation: 20,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.collections),
+              label: 'Collections',
+            ),
+          ],
+        ),
       ),
     );
   }

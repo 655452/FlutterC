@@ -92,25 +92,36 @@ class RestaurantData {
 }
 
 class MenuItemData {
-  MenuItemData({
-    this.id,
-    this.name,
-    this.slug,
-    this.unitPrice,
-    this.discountPrice,
-    this.currencyCode,
-    this.image,
-    this.description,
-  });
-
   int? id;
   String? name;
   String? slug;
   String? unitPrice;
   String? discountPrice;
+  
   CurrencyCode? currencyCode;
-  String? image;
+  // String? image;
+   List<String>? image; 
+   List<String>? category; 
   String? description;
+  double? ratings;
+   List<String>? reviews;
+  int? restaurantId; // Add this line
+
+  MenuItemData({
+    this.id,
+    this.name,
+    this.slug,
+    this.unitPrice,
+    this.category,
+    this.discountPrice,
+    this.currencyCode,
+    this.image,
+    this.reviews,
+    this.ratings,
+    this.description,
+    this.restaurantId, // Add this line
+
+  });
 
   factory MenuItemData.fromJson(Map<String, dynamic> json) => MenuItemData(
         id: json["id"],
@@ -118,9 +129,27 @@ class MenuItemData {
         slug: json["slug"],
         unitPrice: json["unit_price"],
         discountPrice: json["discount_price"],
+      
         currencyCode: currencyCodeValues.map![json["currency_code"]],
-        image: json["image"],
+        // image: json["image"],
+        ratings:json["ratings"],
+        category: json["category"] is String
+            ? [json["category"]]
+            : json["category"] != null
+                ? List<String>.from(json["category"])
+                : [],
+        image: json["image"] is String
+            ? [json["image"]]
+            : json["image"] != null
+                ? List<String>.from(json["image"])
+                : [],
+        reviews: json["reviews"] is String
+            ? [json["reviews"]]
+            : json["reviews"] != null
+                ? List<String>.from(json["reviews"])
+                : [],
         description: json["description"],
+        restaurantId: json["restaurant_id"], // Add this line
       );
 
   Map<String, dynamic> toJson() => {
@@ -128,12 +157,60 @@ class MenuItemData {
         "name": name,
         "slug": slug,
         "unit_price": unitPrice,
+        "category":category,
         "discount_price": discountPrice,
         "currency_code": currencyCodeValues.reverse[currencyCode],
         "image": image,
+        "ratings":ratings,
+        "reviews":reviews,
         "description": description,
+        "restaurant_id": restaurantId, // Add this line
       };
 }
+
+// class MenuItemData {
+//   MenuItemData({
+//     this.id,
+//     this.name,
+//     this.slug,
+//     this.unitPrice,
+//     this.discountPrice,
+//     this.currencyCode,
+//     this.image,
+//     this.description,
+//   });
+
+//   int? id;
+//   String? name;
+//   String? slug;
+//   String? unitPrice;
+//   String? discountPrice;
+//   CurrencyCode? currencyCode;
+//   String? image;
+//   String? description;
+
+//   factory MenuItemData.fromJson(Map<String, dynamic> json) => MenuItemData(
+//         id: json["id"],
+//         name: json["name"],
+//         slug: json["slug"],
+//         unitPrice: json["unit_price"],
+//         discountPrice: json["discount_price"],
+//         currencyCode: currencyCodeValues.map![json["currency_code"]],
+//         image: json["image"],
+//         description: json["description"],
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "id": id,
+//         "name": name,
+//         "slug": slug,
+//         "unit_price": unitPrice,
+//         "discount_price": discountPrice,
+//         "currency_code": currencyCodeValues.reverse[currencyCode],
+//         "image": image,
+//         "description": description,
+//       };
+// }
 
 enum CurrencyCode { EMPTY }
 
@@ -184,7 +261,8 @@ class Restaurant {
   String? createdAt;
   String? updatedAt;
   String? image;
-  String? logo;
+  // String? logo;
+  List<String>? logo; 
   int? tableStatus;
   List<dynamic>? cuisines;
 
@@ -209,7 +287,14 @@ class Restaurant {
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         image: json["image"],
-        logo: json["logo"],
+        // logo: json["logo"],
+        // logo: json["logo"] != null ? List<String>.from(json["logo"]) : [], // Handle array parsing
+        // Handle both single string and list of strings
+        logo: json["logo"] is String
+            ? [json["logo"]]
+            : json["logo"] != null
+                ? List<String>.from(json["logo"])
+                : [],
         cuisines: List<dynamic>.from(json["cuisines"].map((x) => x)),
       );
 

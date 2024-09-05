@@ -9,12 +9,16 @@ class CuisineController extends GetxController {
   List<CuisineDataModel> cuisineList = <CuisineDataModel>[];
   bool cuisineLoader = true;
 
+  // get onRefreshScreen => null;
+
   @override
   void onInit() {
     getAllCuisine();
     super.onInit();
   }
-
+ Future<void> onRefreshScreen() async {
+    await getAllCuisine(); // Refresh the cuisine list
+  }
   @override
   void onClose() {
     super.onClose();

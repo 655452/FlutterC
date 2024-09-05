@@ -43,51 +43,52 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
               child: Scaffold(
                 floatingActionButton: Stack(
                   children: <Widget>[
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                          padding: const EdgeInsets.only(top: 60),
-                          child: GetBuilder<CartController>(
-                            init: CartController(),
-                            builder: (cart) => Stack(children: [
-                              SizedBox(
-                                  height: 45,
-                                  width: 45,
-                                  child: FittedBox(
-                                      child: FloatingActionButton(
-                                    heroTag: "cart",
-                                    onPressed: () {
-                                      Get.to(() => CartPage());
-                                    },
-                                    child: Icon(
-                                      Icons.shopping_cart,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                    backgroundColor: ThemeColors.baseThemeColor,
-                                  ))),
-                              new Positioned(
-                                  child: new Stack(
-                                children: <Widget>[
-                                  new Icon(Icons.brightness_1,
-                                      size: 20.0, color: Colors.orange),
-                                  new Positioned(
-                                      top: 4.0,
-                                      right: 5.5,
-                                      child: new Center(
-                                        child: new Text(
-                                          cart.totalQunty.toString(),
-                                          style: new TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 11.0,
-                                              fontWeight: FontWeight.w900),
-                                        ),
-                                      )),
-                                ],
-                              )),
-                            ]),
-                          )),
-                    ),
+                    // commenting  cart  icon
+                    // Align(
+                    //   alignment: Alignment.topRight,
+                    //   child: Padding(
+                    //       padding: const EdgeInsets.only(top: 60),
+                    //       child: GetBuilder<CartController>(
+                    //         init: CartController(),
+                    //         builder: (cart) => Stack(children: [
+                    //           SizedBox(
+                    //               height: 45,
+                    //               width: 45,
+                    //               child: FittedBox(
+                    //                   child: FloatingActionButton(
+                    //                 heroTag: "cart",
+                    //                 onPressed: () {
+                    //                   Get.to(() => CartPage());
+                    //                 },
+                    //                 child: Icon(
+                    //                   Icons.shopping_cart,
+                    //                   color: Colors.white,
+                    //                   size: 30,
+                    //                 ),
+                    //                 backgroundColor: ThemeColors.baseThemeColor,
+                    //               ))),
+                    //           new Positioned(
+                    //               child: new Stack(
+                    //             children: <Widget>[
+                    //               new Icon(Icons.brightness_1,
+                    //                   size: 20.0, color: Colors.orange),
+                    //               new Positioned(
+                    //                   top: 4.0,
+                    //                   right: 5.5,
+                    //                   child: new Center(
+                    //                     child: new Text(
+                    //                       cart.totalQunty.toString(),
+                    //                       style: new TextStyle(
+                    //                           color: Colors.white,
+                    //                           fontSize: 11.0,
+                    //                           fontWeight: FontWeight.w900),
+                    //                     ),
+                    //                   )),
+                    //             ],
+                    //           )),
+                    //         ]),
+                    //       )),
+                    // ),
 
                     Align(
                       alignment: Alignment.topLeft,

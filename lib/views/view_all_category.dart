@@ -90,7 +90,9 @@ class _ViewAllCategoriesSTate extends State<ViewAllCategories> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CachedNetworkImage(
+                          //  added the expanded widget to wrapped the overflowed image
+                          Expanded(
+                            child:CachedNetworkImage(
                             imageUrl:
                                 "${categories.categoriesList[index].image}",
                             // imageBuilder: (context, imageProvider) => Image(
@@ -119,6 +121,7 @@ class _ViewAllCategoriesSTate extends State<ViewAllCategories> {
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),
+                         ),
                           SizedBox(height: 10),
                           Text(
                             " ${categories.categoriesList[index].title}",
