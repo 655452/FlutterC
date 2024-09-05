@@ -19,7 +19,7 @@ class Loader extends StatelessWidget {
               height: block * 15,
               width: block * 15,
               decoration: BoxDecoration(
-                  color: ThemeColors.baseThemeColor, shape: BoxShape.circle),
+                  color: Colors.white, shape: BoxShape.circle),
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
@@ -36,7 +36,7 @@ class Loader extends StatelessWidget {
           right: 2,
           bottom: 2,
           child: CircularProgressIndicator(
-              strokeWidth: 1.5, backgroundColor: ThemeColors.baseThemeColor),
+              strokeWidth: 1.5, backgroundColor: Colors.white),
         ),
       ],
     );

@@ -6,6 +6,10 @@ import '/views/restaurant_details.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'carasole_slider.dart';
+
+import '/views/CollectionPage.dart';
+
 class ActiveDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -62,6 +66,7 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
       init: BannerController(),
       builder: (banner) => Stack(
         children: <Widget>[
+         
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Container(
@@ -80,8 +85,9 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
                 itemBuilder: (BuildContext context, itemIndex, realIndex) {
                   return InkWell(
                     onTap: () {
-                      Get.to(RestaurantDetails(
-                          id: banner.bannerList[itemIndex].restaurantId));
+                       Get.to(() => CollectionPage());
+                      // Get.to(RestaurantDetails(
+                      //     id: banner.bannerList[itemIndex].restaurantId));
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -118,9 +124,12 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
                 return activeIndex == idx ? ActiveDot() : InactiveDot();
               }),
             ),
-          )
+          ),
+             
         ],
+
       ),
+      
     );
   }
 }

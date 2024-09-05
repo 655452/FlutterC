@@ -36,6 +36,13 @@ class TabBarDemo extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 15, vertical: 2.5),
                     child: Text(
+                      'Review',
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15, vertical: 2.5),
+                    child: Text(
                       'Overview',
                     ),
                   ),
@@ -50,21 +57,14 @@ class TabBarDemo extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 15, vertical: 2.5),
                     child: Text(
-                      'Review',
-                    ),
-                  ),
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 15, vertical: 2.5),
-                    child: Text(
                       'Add Review',
                     ),
                   ),
                 ],
                 views: [
+                  ReviewPage(),
                   OverViewPage(),
                   LocationViewPage(restaurant.lat, restaurant.long),
-                  ReviewPage(),
                   AddReviewPage(),
                 ],
                 onChange: (index) => print(index),

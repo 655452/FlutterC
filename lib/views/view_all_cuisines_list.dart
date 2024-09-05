@@ -90,7 +90,8 @@ class _ViewAllCuisinesSTate extends State<ViewAllCuisines> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CachedNetworkImage(
+                         Expanded(
+                          child: CachedNetworkImage(
                             imageUrl: "${cuisines.cuisineList[index].image}",
                             imageBuilder: (context, imageProvider) => Container(
                             
@@ -112,6 +113,7 @@ class _ViewAllCuisinesSTate extends State<ViewAllCuisines> {
                             ),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
+                          ),
                           ),
                           SizedBox(height: 10),
                           Text(

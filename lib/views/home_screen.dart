@@ -17,6 +17,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:snapping_sheet/snapping_sheet.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import '/Controllers/banner_controller.dart';
 import '/Controllers/category_Controller.dart';
@@ -30,6 +31,7 @@ import '/views/view_restaurent_page_search.dart';
 import '/widgets/all_restaurants_heading.dart';
 import '/widgets/cuisine_heading.dart';
 import '/widgets/custom_slider.dart';
+import '/widgets/carasole_slider.dart';
 import '/widgets/popular_cuisines.dart';
 // import '/widgets/view_all_category.dart';// for categories
 import '../Controllers/category_Controller.dart';
@@ -38,6 +40,8 @@ import '/widgets/categories_heading.dart';
 import '/widgets/shimmer/popular_restaurant_shimmer.dart';
 import '../Controllers/address_controller.dart';
 import 'map/map_screen.dart';
+
+import '/views/CollectionPage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -55,9 +59,11 @@ class _HomePageState extends State<HomePage> {
   String? subCity;
   String? city;
   dynamic addressLabel = '';
+  String restaurantName="";
 
   LocationData? currentLocation;
 
+  
   final settingController = Get.put(GlobalController());
   final categoriesController = Get.put(CategoryController());
   final popularRestaurantsController = Get.put(PopularRestaurantController());
@@ -66,6 +72,16 @@ class _HomePageState extends State<HomePage> {
   
   final categoryController = Get.put(CategoryController());// category updated
   final addressController = Get.put(AddressController());
+
+final ScrollController _scrollController = ScrollController();
+HomePageState(){_scrollController.addListener(() {
+      // Check if the user has scrolled to the bottom
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // Trigger load more when user scrolls to the bottom
+        popularRestaurantsController.loadMore();
+      }
+    });}
 
 //  extracting  description from restaurants
   Map<String, String> parseDescription(String description) {
@@ -80,6 +96,7 @@ class _HomePageState extends State<HomePage> {
   final instagram = instagramMatch?.group(1) ?? '';
   final facebook = facebookMatch?.group(1) ?? '';
   final desc = descriptionMatch?.group(1) ?? '';
+  
 
   // print('Original description: $description');
   // print('Instagram handle: $instagram');
@@ -113,8 +130,13 @@ class _HomePageState extends State<HomePage> {
 
   String page = 'Home';
 
+bool isFavorited=true;
+
   @override
   void initState() {
+      
+
+    
     if (mounted) {
       FirebaseMessaging.instance
           .getInitialMessage()
@@ -232,8 +254,10 @@ class _HomePageState extends State<HomePage> {
     mainHeight = MediaQuery.of(context).size.height;
     mainWidth = MediaQuery.of(context).size.width;
     return GetBuilder<PopularRestaurantController>(
+      
         init: PopularRestaurantController(),
         builder: (popularRestaurant) => Scaffold(
+          
             appBar: AppBar(
               elevation: 0,
               automaticallyImplyLeading: false,
@@ -243,12 +267,16 @@ class _HomePageState extends State<HomePage> {
               title: GetBuilder<GlobalController>(
                   init: GlobalController(),
                   builder: (homeName) => Column(
+                   
+                    // controller: _scrollController,
                         children: [
+                          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
                                   width: ScreenSize(context).mainWidth / 2.2,
+                                  
                                   child: GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -287,7 +315,8 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                         ],
                                       ))),
-                              SizedBox(
+                              Expanded(
+                                  child:SizedBox(
                                 width: ScreenSize(context).mainWidth / 2.2,
                                 child: GestureDetector(
                                   onTap: () {
@@ -295,9 +324,11 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(right: 10),
-                                    child: Column(
+                                    // child:Flexible(
+                                       child:Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
+                                          mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
                                           FontAwesomeIcons.signOutAlt,
@@ -307,11 +338,15 @@ class _HomePageState extends State<HomePage> {
                                         SizedBox(
                                           width: 3,
                                         ),
+                                        
                                       ],
+                                    ),
+                                 
                                     ),
                                   ),
                                 ),
                               ),
+                              // ),
                             ],
                           ),
                         ],
@@ -362,29 +397,98 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white10,
                               //height: mainHeight,
                               child: Column(children: <Widget>[
+                                // Container(
+                                //   color: ThemeColors.baseThemeColor,
+                                //   padding: EdgeInsets.only(
+                                //       top: 0, right: 10, bottom: 10, left: 10),
+                                  // child: Card(
+                                  //   shape: RoundedRectangleBorder(
+                                  //     borderRadius: BorderRadius.circular(10),
+                                  //   ),
+                                  //   color: Colors.white,
+                                    // child: Container(
+                                    //   height: 40,
+                                    //   padding: EdgeInsets.only(left: 14),
+                                    //   child: TextFormField(
+                                    //     textAlignVertical:
+                                    //         TextAlignVertical.center,
+                                    //     readOnly: true,
+                                    //     decoration: InputDecoration(
+                                    //       contentPadding:
+                                    //           EdgeInsets.only(top: 5),
+                                    //       isCollapsed: true,
+                                    //       border: InputBorder.none,
+                                    //       fillColor: Colors.white,
+                                    //       hintText: "Search by Business",
+                                    //       hintStyle: TextStyle(
+                                    //         color: Colors.grey.shade500,
+                                    //       ),
+                                    //       suffixIcon: Icon(
+                                    //         Icons.search,
+                                    //         color: Colors.grey.shade500,
+                                    //       ),
+                                    //     ),
+                                    //     onTap: () {
+                                    //       Get.to(ViewRestaurantPageSearch(
+                                    //           type: activeMenu));
+                                    //     },
+                                    //   ),
+                                    // ),
+                                  // ),
+                                // ),  
+                                //onTap: () {
+              // Get.to(CollectionsPage(type: 0));
+              // Get.to(() => CollectionPage());
+            // },
+                                bannerController.bannerList.isEmpty
+                                    ?  Container()
+                                    :GestureDetector(
+                                        onTap: () {
+                                          // Get.to(CollectionsPage(type: 0));
+                                          Get.to(() => CollectionPage());
+                                        },
+                                      child:CustomSliderWidget()
+                                      // child:StaticCarouselWidget(),
+                                      ),
+                                      //  StaticCarouselWidget(),
+                                    //  search bar
                                 Container(
-                                  color: ThemeColors.baseThemeColor,
+                                  // color: const Color.fromARGB(255, 238, 229, 225),
                                   padding: EdgeInsets.only(
-                                      top: 0, right: 10, bottom: 10, left: 10),
+                                      top: 10, right: 10, bottom: 10, left: 10),
                                   child: Card(
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(50),
                                     ),
                                     color: Colors.white,
+                                 
                                     child: Container(
-                                      height: 40,
+                                      height: 50,
                                       padding: EdgeInsets.only(left: 14),
+
+                                      decoration: BoxDecoration(
+                                                    color: Colors.white60,
+                                                    borderRadius: BorderRadius.circular(50),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey.withOpacity(0.2), // Shadow color
+                                                        spreadRadius: 2, // Spread radius
+                                                        blurRadius: 10, // Blur radius
+                                                        offset: Offset(0, 5), // Changes position of shadow
+                                                      ),
+                                                    ],
+                                                  ),
                                       child: TextFormField(
                                         textAlignVertical:
                                             TextAlignVertical.center,
-                                        readOnly: true,
+                                        readOnly: false,
                                         decoration: InputDecoration(
                                           contentPadding:
                                               EdgeInsets.only(top: 5),
                                           isCollapsed: true,
                                           border: InputBorder.none,
                                           fillColor: Colors.white,
-                                          hintText: "Search by Business",
+                                          hintText: "What are You searching for",
                                           hintStyle: TextStyle(
                                             color: Colors.grey.shade500,
                                           ),
@@ -393,22 +497,24 @@ class _HomePageState extends State<HomePage> {
                                             color: Colors.grey.shade500,
                                           ),
                                         ),
-                                        onTap: () {
-                                          Get.to(ViewRestaurantPageSearch(
-                                              type: activeMenu));
-                                        },
+                                         onFieldSubmitted: (value) {
+                               Get.to(ViewRestaurantPageSearch(
+                                              type: activeMenu,restaurantName:value));
+                            },
+                                        // onTap: () {
+                                        //   Get.to(ViewRestaurantPageSearch(
+                                        //       type: activeMenu));
+                                        // },
                                       ),
                                     ),
                                   ),
                                 ),
-                                bannerController.bannerList.isEmpty
-                                    ?  Container()
-                                    :CustomSliderWidget(),
+                                // top categories  are  Commented
                                categoryController.categoriesList.isEmpty
                                     ? Container()
                                     : Divider(
-                                        height: 10,
-                                        thickness: 10,
+                                        height: 0,
+                                        thickness: 0,
                                       ),
                                 categoryController.categoriesList.isEmpty
                                     ? Container()
@@ -419,8 +525,8 @@ class _HomePageState extends State<HomePage> {
                                 cuisinesController.cuisineList.isEmpty
                                     ? Container()
                                     : Divider(
-                                        height: 10,
-                                        thickness: 10,
+                                        height: 0,
+                                        thickness: 0,
                                       ),
                                 cuisinesController.cuisineList.isEmpty
                                     ? Container()
@@ -428,21 +534,32 @@ class _HomePageState extends State<HomePage> {
                                 cuisinesController.cuisineList.isEmpty
                                     ? Container()
                                     : Cuisines(),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Divider(
-                                    height: 10,
-                                    thickness: 10,
-                                  ),
-                                ),
+                                    cuisinesController.cuisineList.isEmpty
+                                    ? Container()
+                                    : Divider(
+                                        height: 0,
+                                        thickness: 0,
+                                      ),
+                                  StaticCarouselWidget(),
+                                // Padding(
+                                //   padding:
+                                //       const EdgeInsets.symmetric(vertical: 10),
+                                //   child: Divider(
+                                //     height: 10,
+                                //     thickness: 10,
+                                //   ),
+                                // ),
+                                
                                 AllRestaurantsHeading(),
                                 popularRestaurant
                                         .bestSellingRestaurantList.isEmpty
                                     ? NoRestaurantFound()
                                     : Container(
                                         color: Colors.white10,
+                                        
                                         child: ListView.builder(
+                                          controller: _scrollController,
+                                               // Attach the ScrollController
                                             physics:
                                                 NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
@@ -464,195 +581,211 @@ class _HomePageState extends State<HomePage> {
                                                           .id,
                                                     ));
                                                   },
+                                                  child:Container(
+                                          //           decoration:BoxDecoration( boxShadow: [
+                                          //   BoxShadow(
+                                          //     color: Colors.black.withOpacity(0.1), // Shadow color
+                                          //     spreadRadius: 2, // Spread radius
+                                          //     blurRadius: 10, // Blur radius for a soft shadow
+                                          //     offset: Offset(0, 2), // Position the shadow slightly below the image
+                                          //   ),
+                                          // ],),
                                                   child: Card(
-                                                    //shadowColor: Colors.grey,
-                                                    elevation: 1,
-                                                    // shadowColor: Colors.blueGrey,
-                                                    margin: EdgeInsets.all(2),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  2)),
-                                                    ),
-                                                    child: Column(
-                                                      // crossAxisAlignment: CrossAxisAlignment.stretch,
+  elevation: 1,
+  margin: EdgeInsets.only(left: 20, right: 20, top: 40),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+  ),
+  child: Column(
+    children: <Widget>[
+      Stack(
+        children: [
+          // Restaurant Image
+          CachedNetworkImage(
+            imageUrl: popularRestaurant.bestSellingRestaurantList[index].image!,
+            imageBuilder: (context, imageProvider) => Container(
+              padding: EdgeInsets.only(bottom: 15),
+              height: mainHeight / 5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            placeholder: (context, url) => Shimmer.fromColors(
+              child: Container(
+                height: 130,
+                width: mainWidth,
+                color: Colors.grey,
+              ),
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[400]!,
+            ),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
 
-                                                      children: <Widget>[
-                                                        CachedNetworkImage(
-                                                          imageUrl:
-                                                              popularRestaurant
-                                                                  .bestSellingRestaurantList[
-                                                                      index]
-                                                                  .image!,
-                                                          imageBuilder: (context,
-                                                                  imageProvider) =>
-                                                              Container(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 15),
-                                                            height:
-                                                                mainHeight / 4,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius: BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          2.0),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          2.0)),
-                                                              image:
-                                                                  DecorationImage(
-                                                                image:
-                                                                    imageProvider,
-                                                                fit:
-                                                                    BoxFit.fill,
-                                                                //alignment: Alignment.topCenter,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          placeholder: (context,
-                                                                  url) =>
-                                                              Shimmer
-                                                                  .fromColors(
-                                                            child: Container(
-                                                                height: 130,
-                                                                width:
-                                                                    mainWidth,
-                                                                color: Colors
-                                                                    .grey),
-                                                            baseColor: Colors
-                                                                .grey[300]!,
-                                                            highlightColor:
-                                                                Colors
-                                                                    .grey[400]!,
-                                                          ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              Icon(Icons.error),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical:
-                                                                      5.0),
-                                                          child: ListTile(
-                                                            //  leading:CircleAvatar(backgroundImage:AssetImage("assets/images/pizza_hut") ,) ,
-                                                            title: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      bottom:
-                                                                          5),
-                                                              child: Text(
-                                                                '${popularRestaurant.bestSellingRestaurantList[index].name}',
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 16,
-                                                                ),
-                                                              ),
-                                                            ),
+          // Ratings positioned at the bottom left corner of the image
+          Positioned(
+            bottom: 8,
+            left: 8,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  RatingBar.builder(
+                    itemSize: 16,
+                    initialRating: popularRestaurant
+                        .bestSellingRestaurantList[index]
+                        .avgRating!
+                        .toDouble(),
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: ThemeColors.baseThemeColor,
+                    ),
+                    onRatingUpdate: (rating) {
+                      print(rating);
+                    },
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    "(${popularRestaurant.bestSellingRestaurantList[index].avgRatingUser!.toInt()})",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
 
-                                                            subtitle: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  // "${popularRestaurant.bestSellingRestaurantList[index].description}",
-                                                                  parseDescription("${popularRestaurant.bestSellingRestaurantList[index].description}")["description"]??"null",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          13),
-                                                                  maxLines: 1,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Text(
-                                                                  "${popularRestaurant.bestSellingRestaurantList[index].address}",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          13),
-                                                                  maxLines: 1,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    RatingBar
-                                                                        .builder(
-                                                                      itemSize:
-                                                                          20,
-                                                                      initialRating: popularRestaurant
-                                                                          .bestSellingRestaurantList[
-                                                                              index]
-                                                                          .avgRating!
-                                                                          .toDouble(),
-                                                                      minRating:
-                                                                          1,
-                                                                      direction:
-                                                                          Axis.horizontal,
-                                                                      allowHalfRating:
-                                                                          true,
-                                                                      itemCount:
-                                                                          5,
-                                                                      itemBuilder:
-                                                                          (context, _) =>
-                                                                              Icon(
-                                                                        Icons
-                                                                            .star,
-                                                                        color: ThemeColors
-                                                                            .baseThemeColor,
-                                                                      ),
-                                                                      onRatingUpdate:
-                                                                          (rating) {
-                                                                        print(
-                                                                            rating);
-                                                                      },
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .only(
-                                                                          left:
-                                                                              10.0),
-                                                                      child:
-                                                                          Text(
-                                                                        "(${popularRestaurant.bestSellingRestaurantList[index].avgRatingUser!.toInt()})  reviews",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.grey),
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
+          // Heart icon at the top right corner of the image
+      Positioned(
+  top: 8,
+  right: 8,
+  child: InkWell(
+    onTap: () {
+      setState(() {
+        // Toggle the favorite state and change the icon color
+        isFavorited = !isFavorited;
+      });
+    },
+    child: Container(
+      padding: EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.8),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        isFavorited ? Icons.favorite : Icons.favorite_border,
+        color: isFavorited ? Colors.pink : ThemeColors.baseThemeColor,
+      ),
+    ),
+  ),
+),
+
+
+        ],
+      ),
+
+      // Details Section
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: ListTile(
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: Text(
+              '${popularRestaurant.bestSellingRestaurantList[index].name}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                parseDescription("${popularRestaurant.bestSellingRestaurantList[index].description}")["description"] ?? "null",
+                style: TextStyle(fontSize: 13),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 5),
+              Text(
+                "${popularRestaurant.bestSellingRestaurantList[index].address}",
+                style: TextStyle(fontSize: 13),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
+                                                  ),    ),
                                               );
+                                              
                                             }),
-                                      )
-                              ]),
-                            ),
-                          ),
+                                      ),
+                                  
+                                     
+                                       // Add some space before the button
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Center(
+          child: popularRestaurant.hasMoreData
+              ? ElevatedButton(
+                  onPressed: () {
+                    popularRestaurant.loadMore();
+                  },
+                  child: Text('Load More'),
+                  
+                  style: ElevatedButton.styleFrom(
+                    // width:20,
+                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        elevation: 5, // Shadow effect
+                    backgroundColor: ThemeColors.baseThemeColor, 
+                     shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20), // Rounded corners
                         ),
+                  )
+                )
+              : SizedBox.shrink(),
+        ),
+      ),
+      
+        
+      SizedBox(height: 100),
+        
+                              ]),
+                              
+                          
+                            ),
+                            
+                          ),
+                          
+                        ),
+                        
                       )));
   }
 }
@@ -733,7 +866,8 @@ class _Top_sheet_viewState extends State<Top_sheet_view> {
         ),
         child: Stack(children: <Widget>[
           SingleChildScrollView(
-              child: Column(
+             child:Expanded(
+               child: Column(
             children: <Widget>[
               Container(
                   margin: EdgeInsets.only(
@@ -784,9 +918,11 @@ class _Top_sheet_viewState extends State<Top_sheet_view> {
                         ),
                       ),
                       Container(
-                        child: Row(
+                        child:Expanded(
+                          child: Row(
                           children: [
-                            Column(
+                         
+                           Column(
                               children: [
                                 Radio(
                                   value: 'current',
@@ -804,6 +940,8 @@ class _Top_sheet_viewState extends State<Top_sheet_view> {
                                 ),
                               ],
                             ),
+                           
+                          
                             InkWell(
                               onTap: () {
                                 addressLabel = 'current';
@@ -841,12 +979,16 @@ class _Top_sheet_viewState extends State<Top_sheet_view> {
                                   )
                                 ],
                               ),
+                            
                             )
                           ],
+                        ) ,
                         ),
                       ),
                     ],
-                  )),
+                  )
+                  ),
+             
               Container(
                   child: ListView.builder(
                       physics: ScrollPhysics(),
@@ -923,12 +1065,17 @@ class _Top_sheet_viewState extends State<Top_sheet_view> {
                             ],
                           ),
                         );
-                      })),
+                      })
+                      ),
             ],
           )),
+         
+             ),
           Positioned(
               left: 30.0,
               bottom: 0.0,
+            
+            
               child: Container(
                 width: width,
                 height: 60.0,
@@ -1007,9 +1154,11 @@ class _Top_sheet_viewState extends State<Top_sheet_view> {
                         ),
                       ],
                     ),
+                  
                   ),
                 ),
               )),
+        
         ]));
   }
 }

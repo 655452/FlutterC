@@ -40,6 +40,76 @@ class AuthController extends GetxController {
     });
   }
 
+   Future<void> sendResetCode(String email) async {
+    try {
+      var response = await server.postRequest(
+        endPoint: APIList.passwordEmail,
+        body: json.encode({'email': email}),
+        // headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response != null && response.statusCode == 200) {
+        Get.snackbar('Success', 'Reset code sent to your email.');
+      } else {
+        _showError(response);
+      }
+    } catch (e) {
+      print('while sending  code');
+      print(e);
+      Get.snackbar('Error', 'Failed to send reset code.');
+    }
+  }
+  Future<void> verifyResetCode(String email, String code) async {
+    try {
+      var response = await server.postRequest(
+        endPoint: APIList.passwordCodeCheck,
+        body: json.encode({'email': email, 'code': code}),
+        // headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response != null && response.statusCode == 200) {
+        Get.snackbar('Success', 'Code verified. You can now reset your password.');
+      } else {
+        _showError(response);
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Invalid or expired code.');
+    }
+  }
+   void _showError(response) {
+    Get.snackbar(
+      'Error',
+      response != null
+          ? json.decode(response.body)['message'] ?? 'Something went wrong'
+          : 'Server error',
+    );
+  }
+
+
+  Future<void> resetPasswordWithCode(String email, String code, String newPassword) async {
+    try {
+      var response = await server.postRequest(
+        endPoint: APIList.passwordReset,
+        body: json.encode({
+          'email': email,
+          'code': code,
+          'password': newPassword,
+          'password_confirmation': newPassword,
+        }),
+        // headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response != null && response.statusCode == 200) {
+        Get.snackbar('Success', 'Password reset successfully.');
+        Get.offAllNamed('/login');  // Redirect to login page
+      } else {
+        _showError(response);
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to reset password.');
+    }
+  }
+
   loginOnTap({BuildContext? context, String? email, String? pass}) async {
     print('email');
     loader = true;

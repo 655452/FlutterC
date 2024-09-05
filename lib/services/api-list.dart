@@ -27,8 +27,11 @@ class APIList {
   static String? cuisine = "cuisine";
   static String? refreshToken = "refresh";
   static String? popularRestaurant = "popular-restaurant";
+  static String? popularRestaurantPaginated = "popular-restaurant/paginated";
   static String? banners = "banners";
   static String? restaurant = "restaurant/";
+  // for all static menu Items
+  static String? getStaticMenuItems = "restaurantm";
   static String? review = "review";
   static String? orders = "orders";
   static String? coupon = "coupon";
@@ -38,4 +41,8 @@ class APIList {
   static String? otpLogin = server! + "otp-login";
   static String? verifyOtp = server! + "verify-otp";
   static String? menuItem = "restaurant-menuItem/menuItem/{id}/show";
+  
+  static String? passwordEmail = "password/email";
+  static String? passwordCodeCheck = "password/code/check";
+  static String? passwordReset = "password/reset";
 }

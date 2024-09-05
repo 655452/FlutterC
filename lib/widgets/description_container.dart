@@ -9,10 +9,10 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class DescriptionContainer extends StatefulWidget {
-
-  
   @override
   State<StatefulWidget> createState() {
     return _DescriptionContainerState();
@@ -24,58 +24,60 @@ class _DescriptionContainerState extends State<DescriptionContainer> {
   final restaurantDetailsController = Get.put(RestaurantDetailsController());
 
 // taking  out instagram  facebook and  decsription from the  description text
-Map<String, String> parseDescription(String description) {
-  final instagramRegEx = RegExp(r'instagram=([\w\.]+)');
-  final facebookRegEx = RegExp(r'facebook=([\w\s]+) description=');
-  final descriptionRegEx = RegExp(r'description=(.+)');
+  Map<String, String> parseDescription(String description) {
+    final instagramRegEx = RegExp(r'instagram=([\w\.]+)');
+    final facebookRegEx = RegExp(r'facebook=([\w\s]+) description=');
+    final descriptionRegEx = RegExp(r'description=(.+)');
 
-  final instagramMatch = instagramRegEx.firstMatch(description);
-  final facebookMatch = facebookRegEx.firstMatch(description);
-  final descriptionMatch = descriptionRegEx.firstMatch(description);
+    final instagramMatch = instagramRegEx.firstMatch(description);
+    final facebookMatch = facebookRegEx.firstMatch(description);
+    final descriptionMatch = descriptionRegEx.firstMatch(description);
 
-  final instagram = instagramMatch?.group(1) ?? '';
-  final facebook = facebookMatch?.group(1) ?? '';
-  final desc = descriptionMatch?.group(1) ?? '';
+    final instagram = instagramMatch?.group(1) ?? '';
+    final facebook = facebookMatch?.group(1) ?? '';
+    final desc = descriptionMatch?.group(1) ?? '';
 
-  print('Original description: $description');
-  print('Instagram handle: $instagram');
-  print('Facebook handle: $facebook');
-  print('Description: $desc');
-  return {
-    'instagram': instagram,
-    'facebook': facebook,
-    'description': desc,
-  };
-}
+    print('Original description: $description');
+    print('Instagram handle: $instagram');
+    print('Facebook handle: $facebook');
+    print('Description: $desc');
+    return {
+      'instagram': instagram,
+      'facebook': facebook,
+      'description': desc,
+    };
+  }
+
 // for whatsapp these funxtion is  integrated
-void launchWhatsApp({required String phone}) async {
-  // final url = 'https://wa.me/$phone';
-  final Uri url = Uri.parse('whatsapp://send?phone=$phone');
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    throw 'Could not launch $url';
+  void launchWhatsApp({required String phone}) async {
+    // final url = 'https://wa.me/$phone';
+    final Uri url = Uri.parse('whatsapp://send?phone=$phone');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
-}
-//  latest Added
-void launchInstagram({required String username}) async {
-  final Uri urlApp = Uri.parse('instagram://user?username=$username');
-  if (await canLaunchUrl(urlApp)) {
-    await launchUrl(urlApp);
-  } else {
-    throw 'Could not launch $urlApp';
-  }
-}
-//  updated
-void launchFacebook({required String profileId}) async {
-  final Uri urlApp = Uri.parse('fb://profile/$profileId');
-  if (await canLaunchUrl(urlApp)) {
-    await launchUrl(urlApp);
-  } else {
-    throw 'Could not launch $urlApp';
-  }
-}
 
+//  latest Added
+  void launchInstagram({required String username}) async {
+    final Uri urlApp = Uri.parse('instagram://user?username=$username');
+    if (await canLaunchUrl(urlApp)) {
+      await launchUrl(urlApp);
+    } else {
+      throw 'Could not launch $urlApp';
+    }
+  }
+
+//  updated
+  void launchFacebook({required String profileId}) async {
+    final Uri urlApp = Uri.parse('fb://profile/$profileId');
+    if (await canLaunchUrl(urlApp)) {
+      await launchUrl(urlApp);
+    } else {
+      throw 'Could not launch $urlApp';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,73 +89,113 @@ void launchFacebook({required String profileId}) async {
           ? DescriptionContainerShimmer()
           : Container(
               //height: 300,
-              
-    // final parsedData = parseDescription("${des.restaurantDescription}");
+
+              // final parsedData = parseDescription("${des.restaurantDescription}");
               width: mainWidth,
               child: Column(
                 children: [
+                  // New Container to display the restaurant name
+
+                  SizedBox(height: 10), // Space between name and ListTile
                   ListTile(
-                    leading: CachedNetworkImage(
-                      imageUrl: des.restaurantLogo!,
-                      imageBuilder: (context, imageProvider) => Container(
-                        height: 120,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.fill),
-                        ),
+                    leading: Container(
+                      width: 33.0, // Width of the button
+                      height: 33.0,
+                      // backgroundColor: ThemeColors.baseThemeColor,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ThemeColors
+                            .baseThemeColor, // Ensures the button background is circular
                       ),
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[400]!,
-                        child: Container(
-                          height: 120,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/farmhouse.jpg"),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
+                      child: IconButton(
+                        icon: Image.network(
+                          'https://cdn-icons-png.flaticon.com/128/9674/9674456.png', // URL to your catalog icon
+                          width: 40.0,
+                          height: 40.0,
+                          color: ThemeColors
+                              .whiteTextColor, // Apply theme color if needed
+                        ), // PDF icon
+
+                        onPressed: () {
+                          _showImageAndTextDialog(
+                              context, des.restaurantImage!);
+                        },
+                        //  onPressed: () {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(builder: (context) => PdfWebViewPage(urls: des.restaurantLogo)),
+                        //   );
+                        // },
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
+                    // leading: CachedNetworkImage(
+                    //   imageUrl: des.restaurantLogo!,
+                    //   imageBuilder: (context, imageProvider) => Container(
+                    //     height: 120,
+                    //     width: 60,
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       image: DecorationImage(
+                    //           image: imageProvider, fit: BoxFit.fill),
+                    //     ),
+                    //   ),
+
+                    //   placeholder: (context, url) => Shimmer.fromColors(
+                    //     baseColor: Colors.grey[300]!,
+                    //     highlightColor: Colors.grey[400]!,
+                    //     child: Container(
+                    //       height: 120,
+                    //       width: 60,
+                    //       decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(10),
+                    //         image: DecorationImage(
+                    //           image: AssetImage("assets/images/farmhouse.jpg"),
+                    //           fit: BoxFit.fill,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   errorWidget: (context, url, error) => Icon(Icons.error),
+                    // ),
+
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
-                          child: Text(
-                            "${des.restaurantName}",
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: FontSize.xLarge,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                          SizedBox(width: 100), // Add space between icons
+                        //  Flexible(
+                        //     child: Text(
+                        //       "${des.restaurantName}",
+                        //       maxLines: 2,
+                        //       style: TextStyle(
+                        //           fontSize: FontSize.xLarge,
+                        //           fontWeight: FontWeight.bold),
+                        //     ),
+                        //   ),
+                        SizedBox(width: 110), // Add space between icons
                         InkWell(
                           onTap: () {
-                           launchWhatsApp(phone: "9833891281");
+                            launchWhatsApp(phone: "9833891281");
                           },
                           // child: Icon(
                           //   Icons.info_outline,
                           //   color: ThemeColors.baseThemeColor,
                           //   size: 30,
                           // ),
+
                           child: Image.network(
-                                'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/WhatsApp_icon.png/598px-WhatsApp_icon.png', // WhatsApp icon URL
-                                // color: ThemeColors.baseThemeColor,
-                                width: 30,
-                                height: 30,
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/WhatsApp_icon.png/598px-WhatsApp_icon.png', // WhatsApp icon URL
+                            // color: ThemeColors.baseThemeColor,
+                            width: 30,
+                            height: 30,
                           ),
                         ),
                         SizedBox(width: 10),
                         InkWell(
                           onTap: () {
-                           launchInstagram(username: parseDescription("${des.restaurantDescription}")["instagram"]??"null");
+                            launchInstagram(
+                                username: parseDescription(
+                                            "${des.restaurantDescription}")[
+                                        "instagram"] ??
+                                    "null");
                           },
                           // child: Icon(
                           //   Icons.info_outline,
@@ -161,17 +203,21 @@ void launchFacebook({required String profileId}) async {
                           //   size: 30,
                           // ),
                           child: Image.network(
-                                'https://cdn-icons-png.flaticon.com/128/15707/15707749.png', // Insta icon URL
-                                // color: ThemeColors.baseThemeColor,
-                                width: 27,
-                                height: 27,
+                            'https://cdn-icons-png.flaticon.com/128/15707/15707749.png', // Insta icon URL
+                            // color: ThemeColors.baseThemeColor,
+                            width: 27,
+                            height: 27,
                           ),
                         ),
-                                                SizedBox(width: 10),
+                        SizedBox(width: 10),
                         InkWell(
                           onTap: () {
-                          //  launchWhatsApp(phone: "9833891281");
-                           launchFacebook(profileId: parseDescription("${des.restaurantDescription}")["facebook"]??"null");
+                            //  launchWhatsApp(phone: "9833891281");
+                            launchFacebook(
+                                profileId: parseDescription(
+                                            "${des.restaurantDescription}")[
+                                        "facebook"] ??
+                                    "null");
                           },
                           // child: Icon(
                           //   Icons.info_outline,
@@ -179,43 +225,56 @@ void launchFacebook({required String profileId}) async {
                           //   size: 30,
                           // ),
                           child: Image.network(
-                                'https://cdn-icons-png.flaticon.com/128/145/145802.png', // Facebook icon URL
-                                // color: ThemeColors.baseThemeColor,
-                                width: 27,
-                                height: 27,
+                            'https://cdn-icons-png.flaticon.com/128/145/145802.png', // Facebook icon URL
+                            // color: ThemeColors.baseThemeColor,
+                            width: 27,
+                            height: 27,
                           ),
                         ),
-                                                SizedBox(width: 10),
-                        
-                         InkWell(
-                          onTap: () {
-                            Get.to(RestaurantInfo(
-                              id: des.restaurantID,
-                            ));
-                          },
-                          // child: Icon(
-                          //   Icons.info_outline,
-                          //   color: ThemeColors.baseThemeColor,
-                          //   size: 30,
-                          // ),
-                          child: Image.network(
-                                'https://cdn-icons-png.flaticon.com/128/4926/4926592.png', // WhatsApp icon URL
-                                // color: ThemeColors.baseThemeColor,
-                                width: 27,
-                                height: 27,
-                          ),
-                        ),
+                        SizedBox(width: 10),
 
+                        InkWell(
+                          onTap: () {
+                            // opening the reviews page
+                            // Get.to(RestaurantInfo(
+                            //   id: des.restaurantID,
+                            // ));
+                          },
+                          // child: Icon(
+                          //   Icons.info_outline,
+                          //   color: ThemeColors.baseThemeColor,
+                          //   size: 30,
+                          // ),
+                          child: Image.network(
+                            'https://cdn-icons-png.flaticon.com/128/4926/4926592.png', // WhatsApp icon URL
+                            // color: ThemeColors.baseThemeColor,
+                            width: 27,
+                            height: 27,
+                          ),
+                        ),
                       ],
                     ),
-                    subtitle: Row(
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Flexible(
-                          child: Text(
-                            "${des.cuisines == null ? '' : des.cuisines.toString()}",
-                            style: TextStyle(),
-                            maxLines: 2,
+                        // First row for restaurant name
+                        Text(
+                          "${des.restaurantName}",
+                          maxLines: 2,
+                          style: TextStyle(
+                            fontSize:
+                                FontSize.xLarge, // Adjust font size as needed
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
+                        SizedBox(
+                            height:
+                                5), // Space between restaurant name and cuisines
+                        // Second row for cuisines
+                        Text(
+                          "${des.cuisines == null ? '' : des.cuisines.toString()}",
+                          style: TextStyle(),
+                          maxLines: 2,
                         ),
                       ],
                     ),
@@ -241,32 +300,67 @@ void launchFacebook({required String profileId}) async {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          color: Colors.orange,
-                          size: 20,
+                    child: GestureDetector(
+                      onTap: () {
+                        _showDescriptionDialog(
+                            context,
+                            parseDescription(des.restaurantDescription!)[
+                                    'description'] ??
+                                "null");
+                      },
+                      child: Text(
+                        parseDescription(
+                                des.restaurantDescription!)['description'] ??
+                            "null",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 3.0),
-                          child: Text(
-                            "${des.rating}",
-                            style: TextStyle(
-                                //fontSize: FontSize.xLarge,
-                                fontWeight: FontWeight.bold),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+
+                  InkWell(
+                    onTap: () {
+                      Get.to(RestaurantInfo(
+                        id: des.restaurantID,
+                      ));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: Row(
+                        children: [
+                          // Icon(
+                          //   Icons.star,
+                          //   color: Colors.orange,
+                          //   size: 20,
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 3.0),
+                            child: _buildRatingStars(des.rating as int?),
+                            // child: Text(
+
+                            //   // "${des.rating}",
+                            //   style: TextStyle(
+                            //       //fontSize: FontSize.xLarge,
+                            //       fontWeight: FontWeight.bold),
+                            // ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            "(${des.reviewCount}) reviews",
-                            style: TextStyle(
-                              color: Colors.grey,
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              "(${des.reviewCount}) reviews",
+                              // parseDescription(des.restaurantDescription!)['description']??"null"
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -291,12 +385,207 @@ void launchFacebook({required String profileId}) async {
                             ),
                           ),
                         ),
+                        // catlog button
+
+                        //  previously Catalog button  is  here
+                        //      Align(
+                        //   alignment: Alignment.bottomRight,
+                        //   child: Container(
+                        //     width:45,
+                        //     height: 45,
+                        //     padding: EdgeInsets.only(right: 5.0), // Add padding from the right
+                        //     child: FloatingActionButton(
+                        //       onPressed: () {
+                        //         Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //             builder: (context) => PdfWebViewPage(urls: des.restaurantLogo!),
+                        //           ),
+                        //         );
+                        //       },
+
+                        //       backgroundColor: ThemeColors.baseThemeColor,
+                        //       child: Container(
+                        //         width: 30.0, // Width of the button
+                        //         height: 30.0, // Height of the button
+                        //         decoration: BoxDecoration(
+                        //           shape: BoxShape.circle,
+                        //           // color: ThemeColors.baseThemeColor, // Ensures the button background is circular
+                        //         ),
+                        //         child: Center(
+                        //           child: Image.network(
+                        //             'https://img.icons8.com/?size=64&id=SLyEErG3AwF8&format=png', // URL to your catalog icon
+                        //             width: 30.0,
+                        //             height: 30.0,
+                        //             // color: Colors.white, // Icon color, change if needed
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
                 ],
               ),
             ),
+    );
+  }
+}
+
+void _showDescriptionDialog(BuildContext context, String description) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Description'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(description),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+// start ratings
+Widget _buildRatingStars(int? rating) {
+  // Default to 5 stars
+  int totalStars = 5;
+  int fullStars = 0;
+  int halfStars = 0;
+  int emptyStars = totalStars;
+
+  if (rating != null) {
+    fullStars = rating.floor();
+    halfStars = (rating - fullStars >= 0.5) ? 1 : 0;
+    emptyStars = totalStars - fullStars - halfStars;
+  }
+
+  return Row(
+    children: List.generate(totalStars, (index) {
+      if (index < fullStars) {
+        return Icon(Icons.star, color: Colors.orange, size: 16);
+      } else if (index < fullStars + halfStars) {
+        return Icon(Icons.star_half, color: Colors.orange, size: 16);
+      } else {
+        return Icon(Icons.star_border, color: Colors.grey, size: 16);
+      }
+    }),
+  );
+}
+
+void _showImageAndTextDialog(BuildContext context, String url) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(16.0), // Adjust the radius as needed
+        ),
+        title: Text('Contact'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              width: double
+                  .infinity, // Makes the image cover the width of the container
+              height: 150.0, // Fixed height for the image
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(8.0), // Optional: for rounded corners
+                image: DecorationImage(
+                  image: NetworkImage(url),
+                  fit: BoxFit.cover, // Ensures the image covers the box
+                ),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Row(
+              children: <Widget>[
+                Icon(Icons.phone, color: ThemeColors.darkFont), // Phone icon
+                SizedBox(width: 8.0), // Space between icon and text
+                Expanded(
+                  child: Text('Woicher’s contact - 9833891281'),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              children: <Widget>[
+                Image.network(
+                  'https://img.icons8.com/?size=30&id=14oX0z9ydOeX&format=png', // URL to your
+                  width: 23.0,
+                  height: 23.0,
+                ), // Clock icon
+                SizedBox(width: 8.0), // Space between icon and text
+                Expanded(
+                  child: Text('Usual Delivery time - 2-3 days'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+class PdfWebViewPage extends StatelessWidget {
+  final List<String> urls;
+
+  PdfWebViewPage({required this.urls});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Catalog"),
+
+        backgroundColor: ThemeColors.baseThemeColor, // Set AppBar color
+      ),
+      body: PageView.builder(
+        itemCount: urls.length,
+        itemBuilder: (context, index) {
+          final url = urls[index];
+          final isPdf = url.toLowerCase().endsWith('.pdf');
+          final googleDocsUrl =
+              'https://docs.google.com/viewer?url=$url&embedded=true';
+
+          return isPdf
+              ? WebView(
+                  initialUrl: googleDocsUrl,
+                  javascriptMode: JavascriptMode.unrestricted,
+                )
+              : Center(
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.contain,
+                  ),
+                );
+        },
+      ),
     );
   }
 }

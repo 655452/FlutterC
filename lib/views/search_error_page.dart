@@ -46,7 +46,7 @@ class _SearchErrorPageState extends State<SearchErrorPage> {
             ),
             Center(
               child: Text(
-                'No restaurant found that you are looking for!',
+                'Not found that you are looking for!',
                 style: TextStyle(
                     // fontWeight: FontWeight.w300,
                     fontSize: 14,
@@ -58,7 +58,7 @@ class _SearchErrorPageState extends State<SearchErrorPage> {
             ),
             Center(
               child: Text(
-                'Please search another restaurant',
+                'Please search again',
                 style: TextStyle(
                     // fontWeight: FontWeight.w300,
                     fontSize: 14,

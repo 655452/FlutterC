@@ -40,9 +40,51 @@ class _SignUpPageState extends State<SignUpPage> {
         body: SafeArea(
           child: Container(
             height: SizeConfig.screenHeight,
-            padding: const EdgeInsets.all(30),
+            // padding: const EdgeInsets.all(30),
             child: Stack(
               children: [
+                Positioned(
+                      top: -50,
+                      left: -50,
+                      // right:-50,
+                      child: Container(
+                        width: 250,
+                        height: 250,
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                   
+                    Positioned(
+                      top: -50,
+                      left: 300,
+                     
+                      
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    // Bottom-right circle
+                    Positioned(
+                      bottom: -50,
+                      right: -50,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                   
                 Column(
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   // mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +115,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: ListView(
                           children: [
                             ///Name Input Field
-                            TextFormField(
+                           Container(
+                            padding: const EdgeInsets.fromLTRB(30, 80, 30, 0),
+                             child:TextFormField(
                               controller: controller.nameController,
                               style: GoogleFonts.poppins(
                                 color: Colors.black,
@@ -83,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               decoration: InputDecoration(
                                 //fillColor: ThemeColors.textFieldBgColor,
                                 filled: true,
-                                hintText: "Full name",
+                                hintText: "Username",
                                 hintStyle: GoogleFonts.poppins(
                                   color: ThemeColors.textFieldHintColor,
                                   fontSize: FontSize.medium,
@@ -96,13 +140,17 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
+                           ),
                             SizedBox(height: 16),
 
                             ///E-mail Input Field
-                            TextFormField(
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                              child:TextFormField(
                               controller: controller.emailController,
                               style: GoogleFonts.poppins(
                                 color: Colors.black,
+                                
                               ),
                               cursorColor: ThemeColors.primaryColor,
                               keyboardType: TextInputType.emailAddress,
@@ -115,6 +163,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   fontSize: FontSize.medium,
                                   fontWeight: FontWeight.w400,
                                 ),
+                                
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius:
@@ -122,10 +171,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
+                            ),
                             SizedBox(height: 16),
 
                             ///Phone Input Field
-                            TextFormField(
+                           Container(
+                             padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                             child:TextFormField(
                               controller: controller.phoneController,
                               style: GoogleFonts.poppins(
                                 color: Colors.black,
@@ -148,10 +200,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 16),
+                          
+                           ),
+                             SizedBox(height: 16),
 
                             ///Password Input Field
-                            TextFormField(
+                          Container(
+                               padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                            child:TextFormField(
                               controller: controller.passwordController,
                               obscureText: true,
                               style: GoogleFonts.poppins(
@@ -175,10 +231,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
+                          
+                          ),
                             SizedBox(height: 30),
 
                             ///Password confirmation Input Field
-                            TextFormField(
+                         Container(
+                             padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                            child:TextFormField(
                               controller:
                                   controller.passwordConfirmationController,
                               obscureText: true,
@@ -203,6 +263,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
+                         
+                         ),
                           ],
                         ),
                       ),
@@ -210,13 +272,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     Container(
                       height: 50,
                       width: double.infinity,
+                      margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 70.0), 
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ThemeColors.baseThemeColor, // background
                           foregroundColor: Colors.white, // foreground
                           shape: RoundedRectangleBorder(
                             borderRadius:
-                                BorderRadius.circular(18), // <-- Radius
+                                BorderRadius.circular(50), // <-- Radius
                           ),
                         ),
                         onPressed: () => controller.signupOnTap(
@@ -243,7 +306,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      // padding: const EdgeInsets.al(top: 20,bottom:20),
+                                      padding: const EdgeInsets.fromLTRB(30, 50, 30, 50),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

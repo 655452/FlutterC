@@ -4,7 +4,8 @@ class Menu{
   String? description;
   String? price;
   double? rating;
-  String? image;
+  // String? image;
+  List<String>? image; 
   String? reviews;
 
 
@@ -18,7 +19,12 @@ class Menu{
     title = json['price'];
 
     rating = json['rating'];
-    image = json['image'];
+    // image = json['image'];
+     image: json["image"] is String
+            ? [json["image"]]
+            : json["image"] != null
+                ? List<String>.from(json["image"])
+                : [];
    reviews = json['reviews'];
   }
 

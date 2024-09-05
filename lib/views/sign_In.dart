@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '/utils/theme_colors.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'PasswordReset.dart';
 import 'otp_login_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -75,18 +76,80 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                     child: Container(
                   height: SizeConfig.screenHeight,
                   width: SizeConfig.screenWidth,
-                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  // padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                   child: Stack(children: [
+                    Positioned(
+                      top: -50,
+                      left: -50,
+                      // right:-50,
+                      child: Container(
+                        width: 250,
+                        height: 250,
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: -50,
+                      left: -30,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 240, 80, 40),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    
+                    Positioned(
+                      top: -50,
+                      left: 300,
+                     
+                      
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    // Bottom-right circle
+                    Positioned(
+                      bottom: -50,
+                      right: -50,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
                     Center(
+                       
                       child: SingleChildScrollView(
                         child: Column(
+                            // padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               GetBuilder<GlobalController>(
                                 init: GlobalController(),
-                                builder: (site) => CachedNetworkImage(
-                                  imageUrl: site.customerAppLogo.toString(),
+                                builder: (site) => 
+                                 GestureDetector(
+                                        onTap: () {
+                                          // Navigate to the Sign-In page
+                                          Get.off(() => SignUpPage()); // Replace SignInPage with your actual sign-in page class
+                                        },
+                                child:CachedNetworkImage(
+                                  
+                                  imageUrl: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png",
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     height: 70,
@@ -110,6 +173,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                   errorWidget: (context, url, error) =>
                                       Icon(Icons.error),
                                 ),
+                                 ),
                               ),
                               SizedBox(
                                 height: 20,
@@ -132,6 +196,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                         ),
                                       ),
                               ),
+                              
                               Text(
                                 "Login to your account.",
                                 style: GoogleFonts.poppins(
@@ -147,6 +212,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                   children: [
                                     ///Email Input Field
                                     Container(
+                                        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                                       height: 60,
                                       child: TextFormField(
                                         controller: _emailController,
@@ -176,14 +242,14 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                           fillColor: Colors.black,
                                           focusedBorder: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                BorderRadius.circular(50.0),
                                             borderSide: BorderSide(
                                               color: ThemeColors.baseThemeColor,
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                BorderRadius.circular(50.0),
                                             borderSide: BorderSide(
                                               width: 0.2,
                                               color: Colors.grey,
@@ -196,6 +262,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
                                     ///Password Input Field
                                     Container(
+                                        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                                       height: 60,
                                       child: TextFormField(
                                         controller: _passwordController,
@@ -227,14 +294,14 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                           fillColor: Colors.black,
                                           focusedBorder: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                BorderRadius.circular(50.0),
                                             borderSide: BorderSide(
                                               color: ThemeColors.baseThemeColor,
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                BorderRadius.circular(50.0),
                                             borderSide: BorderSide(
                                               width: 0.2,
                                               color: Colors.grey,
@@ -247,9 +314,12 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
                                     ///Sign in button
                                     Container(
+                                        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                                       height: 50,
                                       width: double.infinity,
-                                      child: ElevatedButton(
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 50.0), // <-- Margin
+                                        child:ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: ThemeColors
                                               .baseThemeColor, // background
@@ -257,7 +327,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                               Colors.white, // foreground
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
-                                                10), // <-- Radius
+                                                50), // <-- Radius
                                           ),
                                         ),
                                         onPressed: () async {
@@ -276,6 +346,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
+                                      )
                                     ),
                                   ],
                                 ),
@@ -299,107 +370,136 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(height: 10),
                                   Container(
-                                    height: 50,
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: ThemeColors
-                                            .titleColor, // background
-                                        foregroundColor:
-                                            Colors.white, // foreground
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              10), // <-- Radius
+                                      height: 50,
+                                        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                      width: double.infinity,
+                                      child: Container(
+                                         margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 50.0), 
+                                        child:ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: ThemeColors.baseThemeColor, // background
+                                          foregroundColor: Colors.white, // foreground
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(50), // <-- Radius
+                                          ),
                                         ),
-                                      ),
-                                      onPressed: () {
-                                        Get.to(() => OtpLoginPage());
-                                      },
-                                      child: Text(
-                                        'OTP Login',
-                                        style: TextStyle(
+                                        onPressed: () {
+                                          // Navigate to the Forgot Password page
+                                          Get.to(() => PasswordResetPage());
+                                        },
+                                        child: Text(
+                                          'Forgot Password',
+                                          style: TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 20),
-                                  Container(
-                                    height: 50,
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: ThemeColors
-                                            .facebookColor, // background
-                                        foregroundColor:
-                                            Colors.white, // foreground
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              10), // <-- Radius
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
-                                      onPressed: () async {
-                                        auth.loginFB();
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: const [
-                                          CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                                "assets/images/facebook.png"),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 10.0),
-                                            child: Text("Login with Facebook"),
-                                          ),
-                                        ],
-                                      ),
+                                      )
                                     ),
-                                  ),
+
+                                  SizedBox(height: 10),
+                                  // Container(
+                                  //   height: 50,
+                                  //   width: double.infinity,
+                                  //   child: ElevatedButton(
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: ThemeColors
+                                  //           .titleColor, // background
+                                  //       foregroundColor:
+                                  //           Colors.white, // foreground
+                                  //       shape: RoundedRectangleBorder(
+                                  //         borderRadius: BorderRadius.circular(
+                                  //             10), // <-- Radius
+                                  //       ),
+                                  //     ),
+                                  //     onPressed: () {
+                                  //       Get.to(() => OtpLoginPage());
+                                  //     },
+                                  //     child: Text(
+                                  //       'OTP Login',
+                                  //       style: TextStyle(
+                                  //           color: Colors.white,
+                                  //           fontWeight: FontWeight.bold),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   SizedBox(height: 20),
-                                  Container(
-                                    height: 50,
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: ThemeColors
-                                            .googleColor, // background
-                                        foregroundColor:
-                                            Colors.white, // foreground
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              10), // <-- Radius
-                                        ),
-                                      ),
-                                      onPressed: () async {
-                                        auth.loginGoogle();
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: const [
-                                          CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                                "assets/images/google.jpg"),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 10.0),
-                                            child:
-                                                Text("Login with Google    "),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                  // Container(
+                                  //   height: 50,
+                                  //   width: double.infinity,
+                                  //   child: ElevatedButton(
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: ThemeColors
+                                  //           .facebookColor, // background
+                                  //       foregroundColor:
+                                  //           Colors.white, // foreground
+                                  //       shape: RoundedRectangleBorder(
+                                  //         borderRadius: BorderRadius.circular(
+                                  //             10), // <-- Radius
+                                  //       ),
+                                  //     ),
+                                  //     onPressed: () async {
+                                  //       auth.loginFB();
+                                  //     },
+                                  //     child: Row(
+                                  //       mainAxisAlignment:
+                                  //           MainAxisAlignment.center,
+                                  //       crossAxisAlignment:
+                                  //           CrossAxisAlignment.center,
+                                  //       children: const [
+                                  //         CircleAvatar(
+                                  //           backgroundImage: AssetImage(
+                                  //               "assets/images/facebook.png"),
+                                  //         ),
+                                  //         Padding(
+                                  //           padding:
+                                  //               EdgeInsets.only(left: 10.0),
+                                  //           child: Text("Login with Facebook"),
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  SizedBox(height: 20),
+                                  // Container(
+                                  //   height: 50,
+                                  //   width: double.infinity,
+                                  //   child: ElevatedButton(
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: ThemeColors
+                                  //           .googleColor, // background
+                                  //       foregroundColor:
+                                  //           Colors.white, // foreground
+                                  //       shape: RoundedRectangleBorder(
+                                  //         borderRadius: BorderRadius.circular(
+                                  //             10), // <-- Radius
+                                  //       ),
+                                  //     ),
+                                  //     onPressed: () async {
+                                  //       auth.loginGoogle();
+                                  //     },
+                                  //     child: Row(
+                                  //       mainAxisAlignment:
+                                  //           MainAxisAlignment.center,
+                                  //       crossAxisAlignment:
+                                  //           CrossAxisAlignment.center,
+                                  //       children: const [
+                                  //         CircleAvatar(
+                                  //           backgroundImage: AssetImage(
+                                  //               "assets/images/google.jpg"),
+                                  //         ),
+                                  //         Padding(
+                                  //           padding:
+                                  //               EdgeInsets.only(left: 10.0),
+                                  //           child:
+                                  //               Text("Login with Google    "),
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 20),
                                     child: Row(
